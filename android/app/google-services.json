@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "419104732904",
+    "project_id": "voux-originals",
+    "storage_bucket": "voux-originals.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419104732904:android:cba77bf16f35f722b9fb5d",
+        "android_client_info": {
+          "package_name": "com.vouxoriginals.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "419104732904-klfh6c7hm87dm6m73phuqf25fbj3mqsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF8I78A2SIJ5HRg8tqo_cjZIOG4VXTEDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "419104732904-klfh6c7hm87dm6m73phuqf25fbj3mqsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
