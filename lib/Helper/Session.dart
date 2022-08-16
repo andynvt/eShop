@@ -43,17 +43,13 @@ Future<bool> isNetworkAvailable() async {
 }
 
 Widget getDiscountLabel(String discount) => Container(
-      decoration: BoxDecoration(
-          color: colors.red, borderRadius: BorderRadius.circular(1)),
+      decoration: BoxDecoration(color: colors.red, borderRadius: BorderRadius.circular(1)),
       margin: const EdgeInsets.only(left: 5),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
         child: Text(
           "$discount%",
-          style: const TextStyle(
-              color: colors.whiteTemp,
-              fontWeight: FontWeight.bold,
-              fontSize: 10),
+          style: const TextStyle(color: colors.whiteTemp, fontWeight: FontWeight.bold, fontSize: 10),
         ),
       ),
     );
@@ -62,27 +58,25 @@ void hideAppbarAndBottomBarOnScroll(
   ScrollController scrollBottomBarController,
   BuildContext context,
 ) {
-  scrollBottomBarController.addListener(() {
-    if (scrollBottomBarController.position.userScrollDirection ==
-        ScrollDirection.reverse) {
-      if (!context.read<HomeProvider>().animationController.isAnimating) {
-        context.read<HomeProvider>().animationController.forward();
-        context.read<HomeProvider>().showBars(false);
-      }
-    } else {
-      if (!context.read<HomeProvider>().animationController.isAnimating) {
-        context.read<HomeProvider>().animationController.reverse();
-        context.read<HomeProvider>().showBars(true);
-      }
-    }
-  });
+  // scrollBottomBarController.addListener(() {
+  //   if (scrollBottomBarController.position.userScrollDirection ==
+  //       ScrollDirection.reverse) {
+  //     if (!context.read<HomeProvider>().animationController.isAnimating) {
+  //       context.read<HomeProvider>().animationController.forward();
+  //       context.read<HomeProvider>().showBars(false);
+  //     }
+  //   } else {
+  //     if (!context.read<HomeProvider>().animationController.isAnimating) {
+  //       context.read<HomeProvider>().animationController.reverse();
+  //       context.read<HomeProvider>().showBars(true);
+  //     }
+  //   }
+  // });
 }
 
 shadow() {
   return const BoxDecoration(
-    boxShadow: [
-      BoxShadow(color: Color(0x1a0400ff), offset: Offset(0, 0), blurRadius: 30)
-    ],
+    boxShadow: [BoxShadow(color: Color(0x1a0400ff), offset: Offset(0, 0), blurRadius: 30)],
   );
 }
 
@@ -111,8 +105,7 @@ errorWidget(double size) {
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
   }
 }
@@ -141,8 +134,7 @@ getAppBar(String title, BuildContext context, {int? from}) {
     }),
     title: Text(
       title,
-      style:
-          const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
+      style: const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
     ),
     actions: <Widget>[
       from == 1
@@ -196,9 +188,7 @@ getAppBar(String title, BuildContext context, {int? from}) {
                               right: 0,
                               child: Container(
                                   //  height: 20,
-                                  decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: colors.primary),
+                                  decoration: const BoxDecoration(shape: BoxShape.circle, color: colors.primary),
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.all(3),
@@ -207,9 +197,7 @@ getAppBar(String title, BuildContext context, {int? from}) {
                                         style: TextStyle(
                                             fontSize: 7,
                                             fontWeight: FontWeight.bold,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .white),
+                                            color: Theme.of(context).colorScheme.white),
                                       ),
                                     ),
                                   )),
@@ -287,8 +275,7 @@ getSimpleAppBar(
     }),
     title: Text(
       title,
-      style:
-          const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
+      style: const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
     ),
   );
 }
@@ -297,9 +284,8 @@ Widget bottomSheetHandle(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.only(top: 10.0),
     child: Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Theme.of(context).colorScheme.lightBlack),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Theme.of(context).colorScheme.lightBlack),
       height: 5,
       width: MediaQuery.of(context).size.width * 0.3,
     ),
@@ -314,9 +300,10 @@ Widget bottomsheetLabel(String labelName, BuildContext context) => Padding(
 Widget getHeading(String title, BuildContext context) {
   return Text(
     getTranslated(context, title)!,
-    style: Theme.of(context).textTheme.headline6!.copyWith(
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.fontColor),
+    style: Theme.of(context)
+        .textTheme
+        .headline6!
+        .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.fontColor),
   );
 }
 
@@ -360,16 +347,12 @@ String imagePath = 'assets/images/';
 
 noIntText(BuildContext context) {
   return Text(getTranslated(context, 'NO_INTERNET')!,
-      style: Theme.of(context)
-          .textTheme
-          .headline5!
-          .copyWith(color: colors.primary, fontWeight: FontWeight.normal));
+      style: Theme.of(context).textTheme.headline5!.copyWith(color: colors.primary, fontWeight: FontWeight.normal));
 }
 
 noIntDec(BuildContext context) {
   return Container(
-    padding:
-        const EdgeInsetsDirectional.only(top: 30.0, start: 30.0, end: 30.0),
+    padding: const EdgeInsetsDirectional.only(top: 30.0, start: 30.0, end: 30.0),
     child: Text(getTranslated(context, 'NO_INTERNET_DISC')!,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -471,8 +454,7 @@ String? validatePincode(String value, String? msg1) {
 String? validateEmail(String value, String? msg1, String? msg2) {
   if (value.isEmpty) {
     return msg1;
-  } else if (!RegExp(
-          r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)"
+  } else if (!RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)"
           r"*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+"
           r"[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
       .hasMatch(value)) {
@@ -493,10 +475,7 @@ Widget getNoItem(BuildContext context) {
   return Center(
       child: Text(
     getTranslated(context, 'noItem')!,
-    style: Theme.of(context)
-        .textTheme
-        .subtitle2!
-        .copyWith(color: Theme.of(context).colorScheme.fontColor),
+    style: Theme.of(context).textTheme.subtitle2!.copyWith(color: Theme.of(context).colorScheme.fontColor),
   ));
 }
 
@@ -687,10 +666,7 @@ String? getTranslated(BuildContext context, String key) {
 }
 
 String getToken() {
-  final claimSet = JwtClaim(
-      issuer: 'eshop',
-      maxAge: const Duration(minutes: 1),
-      issuedAt: DateTime.now().toUtc());
+  final claimSet = JwtClaim(issuer: 'eshop', maxAge: const Duration(minutes: 1), issuedAt: DateTime.now().toUtc());
 
   String token = issueJwtHS256(claimSet, jwtKey);
   print("token is $token");
@@ -710,10 +686,7 @@ Map<String, String> get headers => {
 }*/
 
 String? getPriceFormat(BuildContext context, double price) {
-  return NumberFormat.currency(
-          locale: Platform.localeName,
-          name: SUPPORTED_LOCALES,
-          symbol: CUR_CURRENCY)
+  return NumberFormat.currency(locale: Platform.localeName, name: SUPPORTED_LOCALES, symbol: CUR_CURRENCY)
       .format(price)
       .toString();
 }

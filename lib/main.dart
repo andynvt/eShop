@@ -33,9 +33,7 @@ import 'Provider/order_provider.dart';
 import 'Screen/Dashboard.dart';
 import 'Screen/Login.dart';
 
-
-final GlobalKey<ScaffoldMessengerState> scaffoldMessageKey =
-GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessageKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +43,8 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(myForgroundMessageHandler);
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // status bar color
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
   ));
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -123,8 +122,7 @@ class _MyAppState extends State<MyApp> {
     if (_locale == null) {
       return const Center(
         child: CircularProgressIndicator(
-            color: colors.primary,
-            valueColor: AlwaysStoppedAnimation<Color?>(colors.primary)),
+            color: colors.primary, valueColor: AlwaysStoppedAnimation<Color?>(colors.primary)),
       );
     } else {
       return MultiProvider(
@@ -132,20 +130,13 @@ class _MyAppState extends State<MyApp> {
             Provider<SettingProvider>(
               create: (context) => SettingProvider(widget.sharedPreferences),
             ),
-            ChangeNotifierProvider<UserProvider>(
-                create: (context) => UserProvider()),
-            ChangeNotifierProvider<HomeProvider>(
-                create: (context) => HomeProvider()),
-            ChangeNotifierProvider<CategoryProvider>(
-                create: (context) => CategoryProvider()),
-            ChangeNotifierProvider<ProductDetailProvider>(
-                create: (context) => ProductDetailProvider()),
-            ChangeNotifierProvider<FavoriteProvider>(
-                create: (context) => FavoriteProvider()),
-            ChangeNotifierProvider<OrderProvider>(
-                create: (context) => OrderProvider()),
-            ChangeNotifierProvider<CartProvider>(
-                create: (context) => CartProvider()),
+            ChangeNotifierProvider<UserProvider>(create: (context) => UserProvider()),
+            ChangeNotifierProvider<HomeProvider>(create: (context) => HomeProvider()),
+            ChangeNotifierProvider<CategoryProvider>(create: (context) => CategoryProvider()),
+            ChangeNotifierProvider<ProductDetailProvider>(create: (context) => ProductDetailProvider()),
+            ChangeNotifierProvider<FavoriteProvider>(create: (context) => FavoriteProvider()),
+            ChangeNotifierProvider<OrderProvider>(create: (context) => OrderProvider()),
+            ChangeNotifierProvider<CartProvider>(create: (context) => CartProvider()),
           ],
           child: MaterialApp(
             locale: _locale,
@@ -181,24 +172,18 @@ class _MyAppState extends State<MyApp> {
               canvasColor: Theme.of(context).colorScheme.lightWhite,
               cardColor: colors.cardColor,
               dialogBackgroundColor: Theme.of(context).colorScheme.white,
-              iconTheme:
-                  Theme.of(context).iconTheme.copyWith(color: colors.primary),
+              iconTheme: Theme.of(context).iconTheme.copyWith(color: colors.primary),
               primarySwatch: colors.primary_app,
               primaryColor: Theme.of(context).colorScheme.lightWhite,
               fontFamily: 'OpenSans',
-              colorScheme:
-                  ColorScheme.fromSwatch(primarySwatch: colors.primary_app)
-                      .copyWith(
-                          secondary: colors.secondary,
-                          brightness: Brightness.light),
+              colorScheme: ColorScheme.fromSwatch(primarySwatch: colors.primary_app)
+                  .copyWith(secondary: colors.secondary, brightness: Brightness.light),
               textTheme: TextTheme(
                       headline6: TextStyle(
                         color: Theme.of(context).colorScheme.fontColor,
                         fontWeight: FontWeight.w600,
                       ),
-                      subtitle1: TextStyle(
-                          color: Theme.of(context).colorScheme.fontColor,
-                          fontWeight: FontWeight.bold))
+                      subtitle1: TextStyle(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold))
                   .apply(bodyColor: Theme.of(context).colorScheme.fontColor),
             ),
             debugShowCheckedModeBanner: false,
@@ -208,37 +193,27 @@ class _MyAppState extends State<MyApp> {
               '/home': (context) => const Dashboard(),
               '/login': (context) => const Login(),
             },
-
             darkTheme: ThemeData(
               canvasColor: colors.darkColor,
               cardColor: colors.darkColor2,
               dialogBackgroundColor: colors.darkColor2,
               primaryColor: colors.darkColor,
               textSelectionTheme: TextSelectionThemeData(
-                  cursorColor: colors.darkIcon,
-                  selectionColor: colors.darkIcon,
-                  selectionHandleColor: colors.darkIcon),
+                  cursorColor: colors.darkIcon, selectionColor: colors.darkIcon, selectionHandleColor: colors.darkIcon),
               toggleableActiveColor: colors.primary,
               fontFamily: 'OpenSans',
               //brightness: Brightness.dark,
-              iconTheme:
-                  Theme.of(context).iconTheme.copyWith(color: colors.primary),
+              iconTheme: Theme.of(context).iconTheme.copyWith(color: colors.primary),
               textTheme: TextTheme(
                       headline6: TextStyle(
                         color: Theme.of(context).colorScheme.fontColor,
                         fontWeight: FontWeight.w600,
                       ),
-                      subtitle1: TextStyle(
-                          color: Theme.of(context).colorScheme.fontColor,
-                          fontWeight: FontWeight.bold))
+                      subtitle1: TextStyle(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold))
                   .apply(bodyColor: Theme.of(context).colorScheme.fontColor),
-              colorScheme:
-                  ColorScheme.fromSwatch(primarySwatch: colors.primary_app)
-                      .copyWith(
-                          secondary: colors.darkIcon,
-                          brightness: Brightness.dark),
+              colorScheme: ColorScheme.fromSwatch(primarySwatch: colors.primary_app)
+                  .copyWith(secondary: colors.darkIcon, brightness: Brightness.dark),
             ),
-
             themeMode: themeNotifier.getThemeMode(),
           ));
     }
@@ -249,7 +224,6 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

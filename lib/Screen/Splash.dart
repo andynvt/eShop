@@ -18,8 +18,6 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashScreen extends State<Splash> {
-
-
   @override
   void initState() {
     super.initState();
@@ -30,10 +28,8 @@ class _SplashScreen extends State<Splash> {
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: []);
-
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+    //     overlays: []);
 
     return Scaffold(
       body: Stack(
@@ -41,7 +37,7 @@ class _SplashScreen extends State<Splash> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: colors.primary,
+            color: colors.darkColor,
             child: Center(
               child: SvgPicture.asset(
                 'assets/images/splashlogo.svg',
@@ -65,8 +61,7 @@ class _SplashScreen extends State<Splash> {
   }
 
   Future<void> navigationPage() async {
-    SettingProvider settingsProvider =
-        Provider.of<SettingProvider>(context, listen: false);
+    SettingProvider settingsProvider = Provider.of<SettingProvider>(context, listen: false);
 
     bool isFirstTime = await settingsProvider.getPrefrenceBool(ISFIRSTTIME);
     if (isFirstTime) {
@@ -79,8 +74,6 @@ class _SplashScreen extends State<Splash> {
           ));
     }
   }
-
-
 
   @override
   void dispose() {

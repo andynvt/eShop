@@ -15,13 +15,14 @@ import 'package:eshop/Screen/MyProfile.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:bottom_bar/bottom_bar.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../Provider/SettingProvider.dart';
 import 'All_Category.dart';
-
 
 import 'HomePage.dart';
 import 'NotificationLIst.dart';
@@ -35,15 +36,13 @@ class Dashboard extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<Dashboard>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<Dashboard> with SingleTickerProviderStateMixin {
   int _selBottom = 0;
 
   final PageController _pageController = PageController();
   bool _isNetworkAvail = true;
   var db = DatabaseHelper();
-  late AnimationController navigationContainerAnimationController =
-      AnimationController(
+  late AnimationController navigationContainerAnimationController = AnimationController(
     vsync: this, // the SingleTickerProviderStateMixin
     duration: const Duration(milliseconds: 500),
   );
@@ -54,17 +53,13 @@ class _HomePageState extends State<Dashboard>
     super.initState();
     initDynamicLinks();
     db.getTotalCartCount(context);
-    final pushNotificationService = PushNotificationService(
-        context: context, pageController: _pageController);
+    final pushNotificationService = PushNotificationService(context: context, pageController: _pageController);
     pushNotificationService.initialise();
 
     Future.delayed(Duration.zero, () async {
-      SettingProvider settingsProvider =
-      Provider.of<SettingProvider>(context, listen: false);
+      SettingProvider settingsProvider = Provider.of<SettingProvider>(context, listen: false);
       CUR_USERID = await settingsProvider.getPrefrence(ID) ?? '';
-      context
-          .read<HomeProvider>()
-          .setAnimationController(navigationContainerAnimationController);
+      context.read<HomeProvider>().setAnimationController(navigationContainerAnimationController);
     });
   }
 
@@ -73,8 +68,7 @@ class _HomePageState extends State<Dashboard>
     return WillPopScope(
       onWillPop: () async {
         if (_selBottom != 0) {
-          _pageController.animateToPage(0,
-              duration: const Duration(milliseconds: 1000), curve: Curves.easeInOut);
+          _pageController.animateToPage(0, duration: const Duration(milliseconds: 1000), curve: Curves.easeInOut);
           return false;
         }
         return true;
@@ -96,10 +90,7 @@ class _HomePageState extends State<Dashboard>
           ],
           onPageChanged: (index) {
             setState(() {
-              if (!context
-                  .read<HomeProvider>()
-                  .animationController
-                  .isAnimating) {
+              if (!context.read<HomeProvider>().animationController.isAnimating) {
                 context.read<HomeProvider>().animationController.reverse();
                 context.read<HomeProvider>().showBars(true);
               }
@@ -111,6 +102,16 @@ class _HomePageState extends State<Dashboard>
           },
         ),
         bottomNavigationBar: _getBottomBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            launchUrlString('https://wa.me/84366988779?text=Hello,');
+          },
+          backgroundColor: const Color(0xff4dc247),
+          child: const Icon(
+            Icons.whatsapp,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -134,8 +135,7 @@ class _HomePageState extends State<Dashboard>
       print(e.message);
     });
 
-    final PendingDynamicLinkData? data =
-        await FirebaseDynamicLinks.instance.getInitialLink();
+    final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri? deepLink = data?.link;
     if (deepLink != null) {
       if (deepLink.queryParameters.isNotEmpty) {
@@ -144,8 +144,6 @@ class _HomePageState extends State<Dashboard>
         int secPos = int.parse(deepLink.queryParameters['secPos']!);
 
         String? id = deepLink.queryParameters['id'];
-
-
 
         getProduct(id!, index, secPos, true);
       }
@@ -160,7 +158,6 @@ class _HomePageState extends State<Dashboard>
           ID: id,
         };
 
-
         apiBaseHelper.postAPICall(getProductApi, parameter).then((getdata) {
           bool error = getdata["error"];
           String msg = getdata["message"];
@@ -169,16 +166,12 @@ class _HomePageState extends State<Dashboard>
 
             List<Product> items = [];
 
-            items = (data as List)
-                .map((data) => Product.fromJson(data))
-                .toList();
+            items = (data as List).map((data) => Product.fromJson(data)).toList();
 
             Navigator.of(context).push(CupertinoPageRoute(
                 builder: (context) => ProductDetail(
                       index: list ? int.parse(id) : index,
-                      model: list
-                          ? items[0]
-                          : sectionList[secPos].productList![index],
+                      model: list ? items[0] : sectionList[secPos].productList![index],
                       secPos: secPos,
                       list: list,
                     )));
@@ -217,7 +210,6 @@ class _HomePageState extends State<Dashboard>
     return AppBar(
       elevation: 0,
       centerTitle: false,
-
       title: _selBottom == 0
           ? SvgPicture.asset(
               'assets/images/titleicon.svg',
@@ -226,10 +218,8 @@ class _HomePageState extends State<Dashboard>
             )
           : Text(
               title!,
-              style: const TextStyle(
-                  color: colors.primary, fontWeight: FontWeight.normal),
+              style: const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
             ),
-
       actions: <Widget>[
         IconButton(
           icon: SvgPicture.asset(
@@ -275,21 +265,16 @@ class _HomePageState extends State<Dashboard>
 
   Widget _getBottomBar() {
     return FadeTransition(
-        opacity: Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(
-            parent: navigationContainerAnimationController,
-            curve: Curves.easeInOut)),
+        opacity: Tween<double>(begin: 1.0, end: 0.0)
+            .animate(CurvedAnimation(parent: navigationContainerAnimationController, curve: Curves.easeInOut)),
         child: SlideTransition(
           position: Tween<Offset>(begin: Offset.zero, end: const Offset(0.0, 1.0))
-              .animate(CurvedAnimation(
-                  parent: navigationContainerAnimationController,
-                  curve: Curves.easeInOut)),
+              .animate(CurvedAnimation(parent: navigationContainerAnimationController, curve: Curves.easeInOut)),
           child: Container(
             height: kBottomNavigationBarHeight,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.white,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
             child: BottomBar(
               duration: const Duration(milliseconds: 1000),
               curve: Curves.easeInOut,
@@ -357,9 +342,7 @@ class _HomePageState extends State<Dashboard>
                                   textDirection: Directionality.of(context),
                                   top: 0,
                                   child: Container(
-                                      decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: colors.primary),
+                                      decoration: const BoxDecoration(shape: BoxShape.circle, color: colors.primary),
                                       child: Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(3),
@@ -368,9 +351,7 @@ class _HomePageState extends State<Dashboard>
                                             style: TextStyle(
                                                 fontSize: 7,
                                                 fontWeight: FontWeight.bold,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .white),
+                                                color: Theme.of(context).colorScheme.white),
                                           ),
                                         ),
                                       )),
