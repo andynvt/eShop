@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'dart:math';
 
@@ -17,6 +18,7 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tuple/tuple.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../Helper/Color.dart';
 import '../Helper/Constant.dart';
@@ -32,9 +34,7 @@ class ProductList extends StatefulWidget {
   final bool? tag, fromSeller;
   final int? dis;
 
-  const ProductList(
-      {Key? key, this.id, this.name, this.tag, this.fromSeller, this.dis})
-      : super(key: key);
+  const ProductList({Key? key, this.id, this.name, this.tag, this.fromSeller, this.dis}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => StateProduct();
@@ -60,8 +60,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   bool _isFirstLoad = true;
 
   String selId = "";
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   Animation? buttonSqueezeanimation;
   AnimationController? buttonController;
   bool listType = true;
@@ -92,8 +91,6 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   String lastWords = '';
   List<LocaleName> _localeNames = [];
 
-
-
   @override
   void initState() {
     super.initState();
@@ -101,10 +98,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
     controller = ScrollController(keepScrollOffset: true);
     controller.addListener(_scrollListener);
     _controller1.addListener(() {
-
       if (_controller1.text.isEmpty) {
         setState(() {
-
           query = '';
           offset = 0;
           isLoadingmore = true;
@@ -131,13 +126,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
     getProduct("0");
 
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2200));
-    _animationController1 = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2200));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
+    _animationController1 = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
 
-    buttonController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+    buttonController = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = Tween(
       begin: deviceWidth! * 0.7,
@@ -152,8 +144,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   }
 
   _scrollListener() {
-    if (controller.offset >= controller.position.maxScrollExtent &&
-        !controller.position.outOfRange) {
+    if (controller.offset >= controller.position.maxScrollExtent && !controller.position.outOfRange) {
       if (mounted) {
         if (mounted) {
           setState(() {
@@ -186,18 +177,31 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-        appBar: widget.fromSeller! ? null : getAppBar(widget.name!, context),
-       // key: _scaffoldKey,
-        body: _isNetworkAvail
-            ? Stack(
-                children: <Widget>[
-                  _showForm(),
-                  showCircularProgress(_isProgress, colors.primary),
-                ],
-              )
-            : noInternet(context));
+      appBar: widget.fromSeller! ? null : getAppBar(widget.name!, context),
+      // key: _scaffoldKey,
+      body: _isNetworkAvail
+          ? Stack(
+              children: <Widget>[
+                _showForm(),
+                showCircularProgress(_isProgress, colors.primary),
+              ],
+            )
+          : noInternet(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          launchUrlString(
+            'https://wa.me/919778215466?text=Hello,',
+            mode: Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault,
+          );
+        },
+        backgroundColor: const Color(0xff4dc247),
+        child: const Icon(
+          Icons.whatsapp,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
   Widget noInternet(BuildContext context) {
@@ -237,14 +241,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: colors.primary,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(80.0)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
           ),
           onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute(
-                    builder: (BuildContext context) => super.widget));
+            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (BuildContext context) => super.widget));
           },
           child: Ink(
             child: Container(
@@ -252,9 +252,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
               alignment: Alignment.center,
               child: Text(getTranslated(context, 'TRY_AGAIN_INT_LBL')!,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                      color: Theme.of(context).colorScheme.white,
-                      fontWeight: FontWeight.normal)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(color: Theme.of(context).colorScheme.white, fontWeight: FontWeight.normal)),
             ),
           ),
         )));
@@ -276,8 +277,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         val = model.prVarientList![model.selVarient!].varient_value!.split(',');
       }
 
-      double price =
-          double.parse(model.prVarientList![model.selVarient!].disPrice!);
+      double price = double.parse(model.prVarientList![model.selVarient!].disPrice!);
       if (price == 0) {
         price = double.parse(model.prVarientList![model.selVarient!].price!);
       }
@@ -287,9 +287,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         off = (double.parse(model.prVarientList![model.selVarient!].price!) -
                 double.parse(model.prVarientList![model.selVarient!].disPrice!))
             .toDouble();
-        off = off *
-            100 /
-            double.parse(model.prVarientList![model.selVarient!].price!);
+        off = off * 100 / double.parse(model.prVarientList![model.selVarient!].price!);
       }
 
       return SlideAnimation(
@@ -298,22 +296,18 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           slideDirection: SlideDirection.fromBottom,
           animationController: _animationController,
           child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
               child: Selector<CartProvider, Tuple2<List<String?>, String?>>(
                 builder: (context, data, child) {
-                  if (data.item1
-                      .contains(model.prVarientList![model.selVarient!].id)) {
+                  if (data.item1.contains(model.prVarientList![model.selVarient!].id)) {
                     _controller[index].text = data.item2.toString();
                   } else {
                     if (CUR_USERID != null) {
-                      _controller[index].text =
-                          model.prVarientList![model.selVarient!].cartCount!;
+                      _controller[index].text = model.prVarientList![model.selVarient!].cartCount!;
                     } else {
                       _controller[index].text = "0";
                     }
                   }
-
 
                   return Stack(
                     clipBehavior: Clip.none,
@@ -331,51 +325,31 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                     tag: "$index${model.id}",
                                     child: ClipRRect(
                                         borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10)),
+                                            topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
                                         child: Stack(
                                           children: [
                                             FadeInImage(
                                               image: NetworkImage(model.image!),
                                               height: 125.0,
                                               width: 110.0,
-                                              fit: extendImg
-                                                  ? BoxFit.fill
-                                                  : BoxFit.contain,
-                                              imageErrorBuilder: (context,
-                                                      error, stackTrace) =>
-                                                  erroWidget(125),
+                                              fit: extendImg ? BoxFit.fill : BoxFit.contain,
+                                              imageErrorBuilder: (context, error, stackTrace) => erroWidget(125),
                                               placeholder: placeHolder(125),
                                             ),
                                             Positioned.fill(
                                                 child: model.availability == "0"
                                                     ? Container(
                                                         height: 55,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .white70,
-
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(2),
+                                                        color: Theme.of(context).colorScheme.white70,
+                                                        padding: const EdgeInsets.all(2),
                                                         child: Center(
                                                           child: Text(
-                                                            getTranslated(
-                                                                context,
-                                                                'OUT_OF_STOCK_LBL')!,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .caption!
-                                                                .copyWith(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                            getTranslated(context, 'OUT_OF_STOCK_LBL')!,
+                                                            style: Theme.of(context).textTheme.caption!.copyWith(
+                                                                  color: Colors.red,
+                                                                  fontWeight: FontWeight.bold,
                                                                 ),
-                                                            textAlign: TextAlign
-                                                                .center,
+                                                            textAlign: TextAlign.center,
                                                           ),
                                                         ),
                                                       )
@@ -385,19 +359,14 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                     decoration: const BoxDecoration(
                                                       color: colors.red,
                                                     ),
-                                                    margin:
-                                                        const EdgeInsets.all(5),
+                                                    margin: const EdgeInsets.all(5),
                                                     child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5.0),
+                                                      padding: const EdgeInsets.all(5.0),
                                                       child: Text(
                                                         "${off.toStringAsFixed(2)}%",
                                                         style: const TextStyle(
-                                                            color: colors
-                                                                .whiteTemp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            color: colors.whiteTemp,
+                                                            fontWeight: FontWeight.bold,
                                                             fontSize: 9),
                                                       ),
                                                     ),
@@ -410,71 +379,42 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           model.name!,
                                           style: Theme.of(context)
                                               .textTheme
                                               .subtitle1!
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .lightBlack),
+                                              .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        model.prVarientList![model.selVarient!]
-                                                        .attr_name !=
-                                                    null &&
-                                                model
-                                                    .prVarientList![
-                                                        model.selVarient!]
-                                                    .attr_name!
-                                                    .isNotEmpty
+                                        model.prVarientList![model.selVarient!].attr_name != null &&
+                                                model.prVarientList![model.selVarient!].attr_name!.isNotEmpty
                                             ? ListView.builder(
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
+                                                physics: const NeverScrollableScrollPhysics(),
                                                 shrinkWrap: true,
-                                                itemCount: att.length >= 2
-                                                    ? 2
-                                                    : att.length,
+                                                itemCount: att.length >= 2 ? 2 : att.length,
                                                 itemBuilder: (context, index) {
                                                   return Row(children: [
                                                     Flexible(
                                                       child: Text(
                                                         att[index].trim() + ":",
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                        overflow: TextOverflow.ellipsis,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .subtitle2!
-                                                            .copyWith(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .lightBlack),
+                                                            .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding:
-                                                          const EdgeInsetsDirectional
-                                                              .only(start: 5.0),
+                                                      padding: const EdgeInsetsDirectional.only(start: 5.0),
                                                       child: Text(
                                                         val[index],
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .subtitle2!
-                                                            .copyWith(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .lightBlack,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                                                            color: Theme.of(context).colorScheme.lightBlack,
+                                                            fontWeight: FontWeight.bold),
                                                       ),
                                                     )
                                                   ]);
@@ -484,63 +424,38 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                             ? Row(
                                                 children: [
                                                   RatingBarIndicator(
-                                                    rating: double.parse(
-                                                        model.rating!),
-                                                    itemBuilder:
-                                                        (context, index) =>
-                                                            const Icon(
+                                                    rating: double.parse(model.rating!),
+                                                    itemBuilder: (context, index) => const Icon(
                                                       Icons.star_rate_rounded,
                                                       color: Colors.amber,
-
                                                     ),
-                                                    unratedColor: Colors.grey
-                                                        .withOpacity(0.5),
+                                                    unratedColor: Colors.grey.withOpacity(0.5),
                                                     itemCount: 5,
                                                     itemSize: 18.0,
                                                     direction: Axis.horizontal,
                                                   ),
                                                   Text(
                                                     " (${model.noOfRating!})",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .overline,
+                                                    style: Theme.of(context).textTheme.overline,
                                                   )
                                                 ],
                                               )
                                             : Container(),
                                         Row(
                                           children: <Widget>[
+                                            Text('${getPriceFormat(context, price)!} ',
+                                                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                                                    color: Theme.of(context).colorScheme.fontColor,
+                                                    fontWeight: FontWeight.bold)),
                                             Text(
-                                                '${getPriceFormat(context, price)!} ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2!
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .fontColor,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                            Text(
-                                              double.parse(model
-                                                          .prVarientList![
-                                                              model.selVarient!]
-                                                          .disPrice!) !=
-                                                      0
-                                                  ? getPriceFormat(
-                                                      context,
-                                                      double.parse(model
-                                                          .prVarientList![
-                                                              model.selVarient!]
-                                                          .price!))!
+                                              double.parse(model.prVarientList![model.selVarient!].disPrice!) != 0
+                                                  ? getPriceFormat(context,
+                                                      double.parse(model.prVarientList![model.selVarient!].price!))!
                                                   : "",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .overline!
-                                                  .copyWith(
-                                                      decoration: TextDecoration
-                                                          .lineThrough,
-                                                      letterSpacing: 0),
+                                                  .copyWith(decoration: TextDecoration.lineThrough, letterSpacing: 0),
                                             ),
                                           ],
                                         ),
@@ -552,83 +467,70 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                       ? Container()
                                                       : cartBtnList
                                                           ? Row(
-                                                              children: <
-                                                                  Widget>[
+                                                              children: <Widget>[
                                                                 Row(
-                                                                  children: <
-                                                                      Widget>[
+                                                                  children: <Widget>[
                                                                     InkWell(
-                                                                      child:
-                                                                          Card(
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(50),
+                                                                      child: Card(
+                                                                        shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(50),
                                                                         ),
-                                                                        child:
-                                                                            const Padding(
-                                                                          padding:
-                                                                              EdgeInsets.all(8.0),
-                                                                          child:
-                                                                              Icon(
+                                                                        child: const Padding(
+                                                                          padding: EdgeInsets.all(8.0),
+                                                                          child: Icon(
                                                                             Icons.remove,
-                                                                            size:
-                                                                                15,
+                                                                            size: 15,
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      onTap:
-                                                                          () {
-                                                                        if (_isProgress ==
-                                                                                false &&
-                                                                            (int.parse(_controller[index].text) >
-                                                                                0)) {
-                                                                          removeFromCart(
-                                                                              index);
+                                                                      onTap: () {
+                                                                        if (_isProgress == false &&
+                                                                            (int.parse(_controller[index].text) > 0)) {
+                                                                          removeFromCart(index);
                                                                         }
                                                                       },
                                                                     ),
                                                                     SizedBox(
                                                                       width: 37,
-                                                                      height:
-                                                                          20,
-                                                                      child:
-                                                                          Stack(
+                                                                      height: 20,
+                                                                      child: Stack(
                                                                         children: [
                                                                           TextField(
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            readOnly:
-                                                                                true,
-                                                                            style:
-                                                                                TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.fontColor),
-                                                                            controller:
-                                                                                _controller[index],
+                                                                            textAlign: TextAlign.center,
+                                                                            readOnly: true,
+                                                                            style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                color: Theme.of(context)
+                                                                                    .colorScheme
+                                                                                    .fontColor),
+                                                                            controller: _controller[index],
                                                                             // _controller[index],
-                                                                            decoration:
-                                                                                const InputDecoration(
+                                                                            decoration: const InputDecoration(
                                                                               border: InputBorder.none,
                                                                             ),
                                                                           ),
-                                                                          PopupMenuButton<
-                                                                              String>(
-                                                                            tooltip:
-                                                                                '',
-                                                                            icon:
-                                                                                const Icon(
+                                                                          PopupMenuButton<String>(
+                                                                            tooltip: '',
+                                                                            icon: const Icon(
                                                                               Icons.arrow_drop_down,
                                                                               size: 1,
                                                                             ),
-                                                                            onSelected:
-                                                                                (String value) {
+                                                                            onSelected: (String value) {
                                                                               if (_isProgress == false) {
                                                                                 addToCart(index, value, 2);
                                                                               }
                                                                             },
-                                                                            itemBuilder:
-                                                                                (BuildContext context) {
-                                                                              return model.itemsCounter!.map<PopupMenuItem<String>>((String value) {
-                                                                                return PopupMenuItem(value: value, child: Text(value, style: TextStyle(color: Theme.of(context).colorScheme.fontColor)));
+                                                                            itemBuilder: (BuildContext context) {
+                                                                              return model.itemsCounter!
+                                                                                  .map<PopupMenuItem<String>>(
+                                                                                      (String value) {
+                                                                                return PopupMenuItem(
+                                                                                    value: value,
+                                                                                    child: Text(value,
+                                                                                        style: TextStyle(
+                                                                                            color: Theme.of(context)
+                                                                                                .colorScheme
+                                                                                                .fontColor)));
                                                                               }).toList();
                                                                             },
                                                                           ),
@@ -638,32 +540,25 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                                     // ),
 
                                                                     InkWell(
-                                                                      child:
-                                                                          Card(
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(50),
+                                                                      child: Card(
+                                                                        shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(50),
                                                                         ),
-                                                                        child:
-                                                                            const Padding(
-                                                                          padding:
-                                                                              EdgeInsets.all(8.0),
-                                                                          child:
-                                                                              Icon(
+                                                                        child: const Padding(
+                                                                          padding: EdgeInsets.all(8.0),
+                                                                          child: Icon(
                                                                             Icons.add,
-                                                                            size:
-                                                                                15,
+                                                                            size: 15,
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      onTap:
-                                                                          () {
-                                                                        if (_isProgress ==
-                                                                            false) {
+                                                                      onTap: () {
+                                                                        if (_isProgress == false) {
                                                                           addToCart(
                                                                               index,
-                                                                              (int.parse(_controller[index].text) + int.parse(model.qtyStepSize!)).toString(),
+                                                                              (int.parse(_controller[index].text) +
+                                                                                      int.parse(model.qtyStepSize!))
+                                                                                  .toString(),
                                                                               2);
                                                                         }
                                                                       },
@@ -709,9 +604,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                   if (_isProgress == false) {
                                     addToCart(
                                         index,
-                                        (int.parse(_controller[index].text) +
-                                                int.parse(model.qtyStepSize!))
-                                            .toString(),
+                                        (int.parse(_controller[index].text) + int.parse(model.qtyStepSize!)).toString(),
                                         1);
                                   }
                                 },
@@ -757,36 +650,27 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Icon(
-                                              !data.contains(model.id)
-                                                  ? Icons.favorite_border
-                                                  : Icons.favorite,
+                                              !data.contains(model.id) ? Icons.favorite_border : Icons.favorite,
                                               size: 20,
                                             ),
                                           ),
                                           onTap: () {
                                             if (CUR_USERID != null) {
-                                              !data.contains(model.id)
-                                                  ? _setFav(-1, model)
-                                                  : _removeFav(-1, model);
+                                              !data.contains(model.id) ? _setFav(-1, model) : _removeFav(-1, model);
                                             } else {
                                               if (!data.contains(model.id)) {
                                                 model.isFavLoading = true;
                                                 model.isFav = "1";
-                                                context
-                                                    .read<FavoriteProvider>()
-                                                    .addFavItem(model);
-                                                db.addAndRemoveFav(
-                                                    model.id!, true);
+                                                context.read<FavoriteProvider>().addFavItem(model);
+                                                db.addAndRemoveFav(model.id!, true);
                                                 model.isFavLoading = false;
                                               } else {
                                                 model.isFavLoading = true;
                                                 model.isFav = "0";
                                                 context
                                                     .read<FavoriteProvider>()
-                                                    .removeFavItem(model
-                                                        .prVarientList![0].id!);
-                                                db.addAndRemoveFav(
-                                                    model.id!, false);
+                                                    .removeFavItem(model.prVarientList![0].id!);
+                                                db.addAndRemoveFav(model.id!, false);
                                                 model.isFavLoading = false;
                                               }
                                               setState(() {});
@@ -794,14 +678,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                           },
                                         );
                                       },
-                                      selector: (_, provider) =>
-                                          provider.favIdList,
+                                      selector: (_, provider) => provider.favIdList,
                                     )))
                     ],
                   );
                 },
-                selector: (_, provider) => Tuple2(provider.cartIdList,
-                    provider.qtyList(model.id!, model.prVarientList![0].id!)),
+                selector: (_, provider) =>
+                    Tuple2(provider.cartIdList, provider.qtyList(model.id!, model.prVarientList![0].id!)),
               )));
     } else {
       return Container();
@@ -814,9 +697,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       try {
         if (mounted) {
           setState(() {
-            index == -1
-                ? model.isFavLoading = true
-                : productList[index].isFavLoading = true;
+            index == -1 ? model.isFavLoading = true : productList[index].isFavLoading = true;
           });
         }
 
@@ -834,9 +715,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
           if (mounted) {
             setState(() {
-              index == -1
-                  ? model.isFavLoading = false
-                  : productList[index].isFavLoading = false;
+              index == -1 ? model.isFavLoading = false : productList[index].isFavLoading = false;
             });
           }
         }, onError: (error) {
@@ -860,9 +739,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       try {
         if (mounted) {
           setState(() {
-            index == -1
-                ? model.isFavLoading = true
-                : productList[index].isFavLoading = true;
+            index == -1 ? model.isFavLoading = true : productList[index].isFavLoading = true;
           });
         }
 
@@ -872,18 +749,14 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           String? msg = getdata["message"];
           if (!error) {
             index == -1 ? model.isFav = "0" : productList[index].isFav = "0";
-            context
-                .read<FavoriteProvider>()
-                .removeFavItem(model.prVarientList![0].id!);
+            context.read<FavoriteProvider>().removeFavItem(model.prVarientList![0].id!);
           } else {
             setSnackbar(msg!, context);
           }
 
           if (mounted) {
             setState(() {
-              index == -1
-                  ? model.isFavLoading = false
-                  : productList[index].isFavLoading = false;
+              index == -1 ? model.isFavLoading = false : productList[index].isFavLoading = false;
             });
           }
         }, onError: (error) {
@@ -913,17 +786,14 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
         int qty;
 
-        qty = (int.parse(_controller[index].text) -
-            int.parse(productList[index].qtyStepSize!));
+        qty = (int.parse(_controller[index].text) - int.parse(productList[index].qtyStepSize!));
 
         if (qty < productList[index].minOrderQuntity!) {
           qty = 0;
         }
 
         var parameter = {
-          PRODUCT_VARIENT_ID: productList[index]
-              .prVarientList![productList[index].selVarient!]
-              .id,
+          PRODUCT_VARIENT_ID: productList[index].prVarientList![productList[index].selVarient!].id,
           USER_ID: CUR_USERID,
           QTY: qty.toString()
         };
@@ -937,14 +807,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             String? qty = data['total_quantity'];
 
             context.read<UserProvider>().setCartCount(data['cart_count']);
-            productList[index]
-                .prVarientList![productList[index].selVarient!]
-                .cartCount = qty.toString();
+            productList[index].prVarientList![productList[index].selVarient!].cartCount = qty.toString();
 
             var cart = getdata["cart"];
-            List<SectionModel> cartList = (cart as List)
-                .map((cart) => SectionModel.fromCart(cart))
-                .toList();
+            List<SectionModel> cartList = (cart as List).map((cart) => SectionModel.fromCart(cart)).toList();
             context.read<CartProvider>().setCartlist(cartList);
           } else {
             setSnackbar(msg!, context);
@@ -968,35 +834,19 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
         int qty;
 
-        qty = (int.parse(_controller[index].text) -
-            int.parse(productList[index].qtyStepSize!));
+        qty = (int.parse(_controller[index].text) - int.parse(productList[index].qtyStepSize!));
 
         if (qty < productList[index].minOrderQuntity!) {
-
           qty = 0;
           db.removeCart(
-              productList[index]
-                  .prVarientList![productList[index].selVarient!]
-                  .id!,
-              productList[index].id!,
-              context);
-          context.read<CartProvider>().removeCartItem(productList[index]
-              .prVarientList![productList[index].selVarient!]
-              .id!);
+              productList[index].prVarientList![productList[index].selVarient!].id!, productList[index].id!, context);
+          context
+              .read<CartProvider>()
+              .removeCartItem(productList[index].prVarientList![productList[index].selVarient!].id!);
         } else {
-
-          context.read<CartProvider>().updateCartItem(
-              productList[index].id!,
-              qty.toString(),
-              productList[index].selVarient!,
-              productList[index]
-                  .prVarientList![productList[index].selVarient!]
-                  .id!);
-          db.updateCart(
-              productList[index].id!,
-              productList[index]
-                  .prVarientList![productList[index].selVarient!]
-                  .id!,
+          context.read<CartProvider>().updateCartItem(productList[index].id!, qty.toString(),
+              productList[index].selVarient!, productList[index].prVarientList![productList[index].selVarient!].id!);
+          db.updateCart(productList[index].id!, productList[index].prVarientList![productList[index].selVarient!].id!,
               qty.toString());
         }
         setState(() {
@@ -1020,8 +870,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           if (mounted) {
             setState(() {
               isLoadingmore = false;
-              if (_controller1.hasListeners &&
-                  _controller1.text.isNotEmpty) {
+              if (_controller1.hasListeners && _controller1.text.isNotEmpty) {
                 _isLoading = true;
               }
             });
@@ -1053,21 +902,17 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             parameter[ORDER] = orderBy;
           }
 
-          if (_currentRangeValues != null &&
-              _currentRangeValues!.start.round().toString() != "0") {
+          if (_currentRangeValues != null && _currentRangeValues!.start.round().toString() != "0") {
             parameter[MINPRICE] = _currentRangeValues!.start.round().toString();
           }
 
-          if (_currentRangeValues != null &&
-              _currentRangeValues!.end.round().toString() != "0") {
+          if (_currentRangeValues != null && _currentRangeValues!.end.round().toString() != "0") {
             parameter[MAXPRICE] = _currentRangeValues!.end.round().toString();
           }
 
           apiBaseHelper.postAPICall(getProductApi, parameter).then((getdata) {
             bool error = getdata["error"];
             String? msg = getdata["message"];
-
-
 
             if (_isFirstLoad) {
               filterList = getdata["filters"];
@@ -1098,9 +943,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                               List<Product> items = [];
                               List<Product> allitems = [];
 
-                              items.addAll(mainlist
-                                  .map((data) => Product.fromJson(data))
-                                  .toList());
+                              items.addAll(mainlist.map((data) => Product.fromJson(data)).toList());
 
                               allitems.addAll(items);
 
@@ -1145,8 +988,6 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
     }
   }
 
-
-
   void getAvailVarient(List<Product> tempList) {
     for (int j = 0; j < tempList.length; j++) {
       if (tempList[j].stockType == "2") {
@@ -1164,11 +1005,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
     }
 
     if (offset == 0 && buildResult) {
-      Product element = Product(
-          name: 'Search Result for "$query"',
-          image: "",
-          catName: "All Categories",
-          history: false);
+      Product element =
+          Product(name: 'Search Result for "$query"', image: "", catName: "All Categories", history: false);
       productList.insert(0, element);
     }
 
@@ -1177,8 +1015,6 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
     isLoadingmore = true;
     offset = offset + perPage;
   }
-
-
 
   Widget productItem(int index, bool pad) {
     if (index < productList.length) {
@@ -1190,8 +1026,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         _controller.add(TextEditingController());
       }
 
-      double price =
-          double.parse(model.prVarientList![model.selVarient!].disPrice!);
+      double price = double.parse(model.prVarientList![model.selVarient!].disPrice!);
       if (price == 0) {
         price = double.parse(model.prVarientList![model.selVarient!].price!);
       }
@@ -1201,17 +1036,14 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         off = (double.parse(model.prVarientList![model.selVarient!].price!) -
                 double.parse(model.prVarientList![model.selVarient!].disPrice!))
             .toDouble();
-        off = off *
-            100 /
-            double.parse(model.prVarientList![model.selVarient!].price!);
+        off = off * 100 / double.parse(model.prVarientList![model.selVarient!].price!);
       }
 
       if (_controller.length < index + 1) {
         _controller.add(TextEditingController());
       }
 
-      _controller[index].text =
-          model.prVarientList![model.selVarient!].cartCount!;
+      _controller[index].text = model.prVarientList![model.selVarient!].cartCount!;
 
       List att = [], val = [];
       if (model.prVarientList![model.selVarient!].attr_name != null) {
@@ -1227,13 +1059,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           animationController: _animationController1,
           child: Selector<CartProvider, Tuple2<List<String?>, String?>>(
             builder: (context, data, child) {
-              if (data.item1
-                  .contains(model.prVarientList![model.selVarient!].id)) {
+              if (data.item1.contains(model.prVarientList![model.selVarient!].id)) {
                 _controller[index].text = data.item2.toString();
               } else {
                 if (CUR_USERID != null) {
-                  _controller[index].text =
-                      model.prVarientList![model.selVarient!].cartCount!;
+                  _controller[index].text = model.prVarientList![model.selVarient!].cartCount!;
                 } else {
                   _controller[index].text = "0";
                 }
@@ -1242,8 +1072,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
               return InkWell(
                 child: Card(
                   elevation: 0.2,
-                  margin: EdgeInsetsDirectional.only(
-                      bottom: 10, end: 10, start: pad ? 10 : 0),
+                  margin: EdgeInsetsDirectional.only(bottom: 10, end: 10, start: pad ? 10 : 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1254,43 +1083,31 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           clipBehavior: Clip.none,
                           children: [
                             ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(5),
-                                    topRight: Radius.circular(5)),
+                                borderRadius:
+                                    const BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
                                 child: Hero(
                                   tag: "$index${model.id}",
                                   child: FadeInImage(
-                                    fadeInDuration:
-                                        const Duration(milliseconds: 150),
+                                    fadeInDuration: const Duration(milliseconds: 150),
                                     image: NetworkImage(model.image!),
                                     height: double.maxFinite,
                                     width: double.maxFinite,
-                                    fit: extendImg
-                                        ? BoxFit.fill
-                                        : BoxFit.contain,
+                                    fit: extendImg ? BoxFit.fill : BoxFit.contain,
                                     placeholder: placeHolder(width),
-                                    imageErrorBuilder:
-                                        (context, error, stackTrace) =>
-                                            erroWidget(width),
+                                    imageErrorBuilder: (context, error, stackTrace) => erroWidget(width),
                                   ),
                                 )),
                             Positioned.fill(
                                 child: model.availability == "0"
                                     ? Container(
                                         height: 55,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .white70,
+                                        color: Theme.of(context).colorScheme.white70,
                                         // width: double.maxFinite,
                                         padding: const EdgeInsets.all(2),
                                         child: Center(
                                           child: Text(
-                                            getTranslated(
-                                                context, 'OUT_OF_STOCK_LBL')!,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
+                                            getTranslated(context, 'OUT_OF_STOCK_LBL')!,
+                                            style: Theme.of(context).textTheme.caption!.copyWith(
                                                   color: Colors.red,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -1312,9 +1129,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                         child: Text(
                                           "${off.toStringAsFixed(2)}%",
                                           style: const TextStyle(
-                                              color: colors.whiteTemp,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 9),
+                                              color: colors.whiteTemp, fontWeight: FontWeight.bold, fontSize: 9),
                                         ),
                                       ),
                                     ),
@@ -1338,11 +1153,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                 if (_isProgress == false) {
                                                   addToCart(
                                                       index,
-                                                      (int.parse(_controller[
-                                                                      index]
-                                                                  .text) +
-                                                              int.parse(model
-                                                                  .qtyStepSize!))
+                                                      (int.parse(_controller[index].text) +
+                                                              int.parse(model.qtyStepSize!))
                                                           .toString(),
                                                       1);
                                                 }
@@ -1350,39 +1162,28 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                               child: Card(
                                                 elevation: 1,
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
+                                                  borderRadius: BorderRadius.circular(50),
                                                 ),
                                                 child: const Padding(
                                                   padding: EdgeInsets.all(8.0),
                                                   child: Icon(
-                                                    Icons
-                                                        .shopping_cart_outlined,
+                                                    Icons.shopping_cart_outlined,
                                                     size: 15,
                                                   ),
                                                 ),
                                               ),
                                             )
                                           : Padding(
-                                              padding:
-                                                  const EdgeInsetsDirectional
-                                                          .only(
-                                                      start: 3.0,
-                                                      bottom: 5,
-                                                      top: 3),
+                                              padding: const EdgeInsetsDirectional.only(start: 3.0, bottom: 5, top: 3),
                                               child: Row(
                                                 children: <Widget>[
                                                   InkWell(
                                                     child: Card(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(50),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(50),
                                                       ),
                                                       child: const Padding(
-                                                        padding:
-                                                            EdgeInsets.all(8.0),
+                                                        padding: EdgeInsets.all(8.0),
                                                         child: Icon(
                                                           Icons.remove,
                                                           size: 15,
@@ -1390,13 +1191,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                       ),
                                                     ),
                                                     onTap: () {
-                                                      if (_isProgress ==
-                                                              false &&
-                                                          (int.parse(
-                                                                  _controller[
-                                                                          index]
-                                                                      .text) >
-                                                              0)) {
+                                                      if (_isProgress == false &&
+                                                          (int.parse(_controller[index].text) > 0)) {
                                                         removeFromCart(index);
                                                       }
                                                     },
@@ -1405,82 +1201,45 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                     width: 37,
                                                     height: 20,
                                                     decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .white70,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
+                                                      color: Theme.of(context).colorScheme.white70,
+                                                      borderRadius: BorderRadius.circular(5),
                                                     ),
                                                     child: Stack(
                                                       children: [
-                                                        Selector<
-                                                            CartProvider,
-                                                            Tuple2<
-                                                                List<String?>,
-                                                                String?>>(
-                                                          builder: (context,
-                                                              data, child) {
+                                                        Selector<CartProvider, Tuple2<List<String?>, String?>>(
+                                                          builder: (context, data, child) {
                                                             return TextField(
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
+                                                              textAlign: TextAlign.center,
                                                               readOnly: true,
                                                               style: TextStyle(
                                                                   fontSize: 12,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .fontColor),
-                                                              controller:
-                                                                  _controller[
-                                                                      index],
-                                                              decoration:
-                                                                  const InputDecoration(
-                                                                border:
-                                                                    InputBorder
-                                                                        .none,
+                                                                  color: Theme.of(context).colorScheme.fontColor),
+                                                              controller: _controller[index],
+                                                              decoration: const InputDecoration(
+                                                                border: InputBorder.none,
                                                               ),
                                                             );
                                                           },
-                                                          selector: (_, provider) => Tuple2(
-                                                              provider
-                                                                  .cartIdList,
-                                                              provider.qtyList(
-                                                                  model.id!,
-                                                                  model
-                                                                      .prVarientList![
-                                                                          0]
-                                                                      .id!)),
+                                                          selector: (_, provider) => Tuple2(provider.cartIdList,
+                                                              provider.qtyList(model.id!, model.prVarientList![0].id!)),
                                                         ),
                                                         PopupMenuButton<String>(
                                                           tooltip: '',
                                                           icon: const Icon(
-                                                            Icons
-                                                                .arrow_drop_down,
+                                                            Icons.arrow_drop_down,
                                                             size: 0,
                                                           ),
-                                                          onSelected:
-                                                              (String value) {
-                                                            if (_isProgress ==
-                                                                false) {
-                                                              addToCart(index,
-                                                                  value, 2);
+                                                          onSelected: (String value) {
+                                                            if (_isProgress == false) {
+                                                              addToCart(index, value, 2);
                                                             }
                                                           },
-                                                          itemBuilder:
-                                                              (BuildContext
-                                                                  context) {
-                                                            return model
-                                                                .itemsCounter!
-                                                                .map<
-                                                                    PopupMenuItem<
-                                                                        String>>((String
-                                                                    value) {
+                                                          itemBuilder: (BuildContext context) {
+                                                            return model.itemsCounter!
+                                                                .map<PopupMenuItem<String>>((String value) {
                                                               return PopupMenuItem(
                                                                   value: value,
-                                                                  child: Text(
-                                                                      value,
+                                                                  child: Text(value,
                                                                       style: TextStyle(
                                                                           color: Theme.of(context)
                                                                               .colorScheme
@@ -1494,15 +1253,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
                                                   InkWell(
                                                     child: Card(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(50),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(50),
                                                       ),
                                                       child: const Padding(
-                                                        padding:
-                                                            EdgeInsets.all(8.0),
+                                                        padding: EdgeInsets.all(8.0),
                                                         child: Icon(
                                                           Icons.add,
                                                           size: 15,
@@ -1510,15 +1265,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                       ),
                                                     ),
                                                     onTap: () {
-                                                      if (_isProgress ==
-                                                          false) {
+                                                      if (_isProgress == false) {
                                                         addToCart(
                                                             index,
-                                                            (int.parse(_controller[
-                                                                            index]
-                                                                        .text) +
-                                                                    int.parse(model
-                                                                        .qtyStepSize!))
+                                                            (int.parse(_controller[index].text) +
+                                                                    int.parse(model.qtyStepSize!))
                                                                 .toString(),
                                                             2);
                                                       }
@@ -1538,25 +1289,18 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                               child: SizedBox(
                                                   height: 15,
                                                   width: 15,
-                                                  child:
-                                                      CircularProgressIndicator(
+                                                  child: CircularProgressIndicator(
                                                     color: colors.primary,
                                                     strokeWidth: 0.7,
                                                   )),
                                             )
-                                          : Selector<FavoriteProvider,
-                                              List<String?>>(
+                                          : Selector<FavoriteProvider, List<String?>>(
                                               builder: (context, data, child) {
                                                 return InkWell(
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                    padding: const EdgeInsets.all(8.0),
                                                     child: Icon(
-                                                      !data.contains(model.id)
-                                                          ? Icons
-                                                              .favorite_border
-                                                          : Icons.favorite,
+                                                      !data.contains(model.id) ? Icons.favorite_border : Icons.favorite,
                                                       size: 15,
                                                     ),
                                                   ),
@@ -1564,45 +1308,29 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                     if (CUR_USERID != null) {
                                                       !data.contains(model.id)
                                                           ? _setFav(-1, model)
-                                                          : _removeFav(
-                                                              -1, model);
+                                                          : _removeFav(-1, model);
                                                     } else {
-                                                      if (!data
-                                                          .contains(model.id)) {
-                                                        model.isFavLoading =
-                                                            true;
+                                                      if (!data.contains(model.id)) {
+                                                        model.isFavLoading = true;
                                                         model.isFav = "1";
-                                                        context
-                                                            .read<
-                                                                FavoriteProvider>()
-                                                            .addFavItem(model);
-                                                        db.addAndRemoveFav(
-                                                            model.id!, true);
-                                                        model.isFavLoading =
-                                                            false;
+                                                        context.read<FavoriteProvider>().addFavItem(model);
+                                                        db.addAndRemoveFav(model.id!, true);
+                                                        model.isFavLoading = false;
                                                       } else {
-                                                        model.isFavLoading =
-                                                            true;
+                                                        model.isFavLoading = true;
                                                         model.isFav = "0";
                                                         context
-                                                            .read<
-                                                                FavoriteProvider>()
-                                                            .removeFavItem(model
-                                                                .prVarientList![
-                                                                    0]
-                                                                .id!);
-                                                        db.addAndRemoveFav(
-                                                            model.id!, false);
-                                                        model.isFavLoading =
-                                                            false;
+                                                            .read<FavoriteProvider>()
+                                                            .removeFavItem(model.prVarientList![0].id!);
+                                                        db.addAndRemoveFav(model.id!, false);
+                                                        model.isFavLoading = false;
                                                       }
                                                       setState(() {});
                                                     }
                                                   },
                                                 );
                                               },
-                                              selector: (_, provider) =>
-                                                  provider.favIdList,
+                                              selector: (_, provider) => provider.favIdList,
                                             )),
                                 ],
                               ),
@@ -1635,38 +1363,23 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         children: [
                           Text('${getPriceFormat(context, price)!} ',
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor,
-                                  fontWeight: FontWeight.bold)),
-                          double.parse(model.prVarientList![model.selVarient!]
-                                      .disPrice!) !=
-                                  0
+                                  color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold)),
+                          double.parse(model.prVarientList![model.selVarient!].disPrice!) != 0
                               ? Flexible(
                                   child: Row(
                                     children: <Widget>[
                                       Flexible(
                                         child: Text(
-                                          double.parse(model
-                                                      .prVarientList![
-                                                          model.selVarient!]
-                                                      .disPrice!) !=
-                                                  0
-                                              ? getPriceFormat(
-                                                  context,
-                                                  double.parse(model
-                                                      .prVarientList![
-                                                          model.selVarient!]
-                                                      .price!))!
+                                          double.parse(model.prVarientList![model.selVarient!].disPrice!) != 0
+                                              ? getPriceFormat(context,
+                                                  double.parse(model.prVarientList![model.selVarient!].price!))!
                                               : "",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: Theme.of(context)
                                               .textTheme
                                               .overline!
-                                              .copyWith(
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  letterSpacing: 0),
+                                              .copyWith(decoration: TextDecoration.lineThrough, letterSpacing: 0),
                                         ),
                                       ),
                                     ],
@@ -1680,19 +1393,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         child: Row(
                           children: [
                             Expanded(
-                              child: model.prVarientList![model.selVarient!]
-                                              .attr_name !=
-                                          null &&
-                                      model.prVarientList![model.selVarient!]
-                                          .attr_name!.isNotEmpty
+                              child: model.prVarientList![model.selVarient!].attr_name != null &&
+                                      model.prVarientList![model.selVarient!].attr_name!.isNotEmpty
                                   ? ListView.builder(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 5.0),
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.only(bottom: 5.0),
+                                      physics: const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
-                                      itemCount:
-                                          att.length >= 2 ? 2 : att.length,
+                                      itemCount: att.length >= 2 ? 2 : att.length,
                                       itemBuilder: (context, index) {
                                         return Row(children: [
                                           Flexible(
@@ -1703,30 +1410,19 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .caption!
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .lightBlack),
+                                                  .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                                             ),
                                           ),
                                           Flexible(
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsetsDirectional
-                                                      .only(start: 5.0),
+                                              padding: const EdgeInsetsDirectional.only(start: 5.0),
                                               child: Text(
                                                 val[index],
                                                 maxLines: 1,
                                                 overflow: TextOverflow.visible,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .lightBlack,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                                    color: Theme.of(context).colorScheme.lightBlack,
+                                                    fontWeight: FontWeight.bold),
                                               ),
                                             ),
                                           )
@@ -1738,16 +1434,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 5.0, bottom: 5),
+                        padding: const EdgeInsetsDirectional.only(start: 5.0, bottom: 5),
                         child: Text(
                           model.name!,
                           style: Theme.of(context)
                               .textTheme
                               .subtitle1!
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.lightBlack),
+                              .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -1772,8 +1465,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 },
               );
             },
-            selector: (_, provider) => Tuple2(provider.cartIdList,
-                provider.qtyList(model.id!, model.prVarientList![0].id!)),
+            selector: (_, provider) =>
+                Tuple2(provider.cartIdList, provider.qtyList(model.id!, model.prVarientList![0].id!)),
           ));
     } else {
       return Container();
@@ -1793,200 +1486,157 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         ),
       ),
       builder: (builder) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
+        return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
           return SingleChildScrollView(
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            top: 19.0, bottom: 16.0),
-                        child: Text(
-                          getTranslated(context, 'SORT_BY')!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor),
-                        )),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      sortBy = '';
-                      orderBy = 'DESC';
-                      if (mounted) {
-                        setState(() {
-                          _isLoading = true;
-                          total = 0;
-                          offset = 0;
-                          productList.clear();
-                        });
-                      }
-                      getProduct("1");
-                      Navigator.pop(context, 'option 1');
-                    },
-                    child: Container(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Center(
+                child: Padding(
+                    padding: const EdgeInsetsDirectional.only(top: 19.0, bottom: 16.0),
+                    child: Text(
+                      getTranslated(context, 'SORT_BY')!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(color: Theme.of(context).colorScheme.fontColor),
+                    )),
+              ),
+              InkWell(
+                onTap: () {
+                  sortBy = '';
+                  orderBy = 'DESC';
+                  if (mounted) {
+                    setState(() {
+                      _isLoading = true;
+                      total = 0;
+                      offset = 0;
+                      productList.clear();
+                    });
+                  }
+                  getProduct("1");
+                  Navigator.pop(context, 'option 1');
+                },
+                child: Container(
+                  width: deviceWidth,
+                  color: sortBy == '' ? colors.primary : Theme.of(context).colorScheme.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Text(getTranslated(context, 'TOP_RATED')!,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: sortBy == ''
+                              ? Theme.of(context).colorScheme.white
+                              : Theme.of(context).colorScheme.fontColor)),
+                ),
+              ),
+              InkWell(
+                  child: Container(
                       width: deviceWidth,
-                      color: sortBy == ''
+                      color: sortBy == 'p.date_added' && orderBy == 'DESC'
                           ? colors.primary
                           : Theme.of(context).colorScheme.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 15),
-                      child: Text(getTranslated(context, 'TOP_RATED')!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  color: sortBy == ''
-                                      ? Theme.of(context).colorScheme.white
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .fontColor)),
-                    ),
-                  ),
-                  InkWell(
-                      child: Container(
-                          width: deviceWidth,
-                          color: sortBy == 'p.date_added' && orderBy == 'DESC'
-                              ? colors.primary
-                              : Theme.of(context).colorScheme.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Text(getTranslated(context, 'F_NEWEST')!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1!
-                                  .copyWith(
-                                      color: sortBy == 'p.date_added' &&
-                                              orderBy == 'DESC'
-                                          ? Theme.of(context).colorScheme.white
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .fontColor))),
-                      onTap: () {
-                        sortBy = 'p.date_added';
-                        orderBy = 'DESC';
-                        if (mounted) {
-                          setState(() {
-                            _isLoading = true;
-                            total = 0;
-                            offset = 0;
-                            productList.clear();
-                          });
-                        }
-                        getProduct("0");
-                        Navigator.pop(context, 'option 1');
-                      }),
-                  InkWell(
-                      child: Container(
-                          width: deviceWidth,
-                          color: sortBy == 'p.date_added' && orderBy == 'ASC'
-                              ? colors.primary
-                              : Theme.of(context).colorScheme.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Text(
-                            getTranslated(context, 'F_OLDEST')!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    color: sortBy == 'p.date_added' &&
-                                            orderBy == 'ASC'
-                                        ? Theme.of(context).colorScheme.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .fontColor),
-                          )),
-                      onTap: () {
-                        sortBy = 'p.date_added';
-                        orderBy = 'ASC';
-                        if (mounted) {
-                          setState(() {
-                            _isLoading = true;
-                            total = 0;
-                            offset = 0;
-                            productList.clear();
-                          });
-                        }
-                        getProduct("0");
-                        Navigator.pop(context, 'option 2');
-                      }),
-                  InkWell(
-                      child: Container(
-                          width: deviceWidth,
-                          color: sortBy == 'pv.price' && orderBy == 'ASC'
-                              ? colors.primary
-                              : Theme.of(context).colorScheme.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Text(
-                            getTranslated(context, 'F_LOW')!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    color: sortBy == 'pv.price' &&
-                                            orderBy == 'ASC'
-                                        ? Theme.of(context).colorScheme.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .fontColor),
-                          )),
-                      onTap: () {
-                        sortBy = 'pv.price';
-                        orderBy = 'ASC';
-                        if (mounted) {
-                          setState(() {
-                            _isLoading = true;
-                            total = 0;
-                            offset = 0;
-                            productList.clear();
-                          });
-                        }
-                        getProduct("0");
-                        Navigator.pop(context, 'option 3');
-                      }),
-                  InkWell(
-                      child: Container(
-                          width: deviceWidth,
-                          color: sortBy == 'pv.price' && orderBy == 'DESC'
-                              ? colors.primary
-                              : Theme.of(context).colorScheme.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Text(
-                            getTranslated(context, 'F_HIGH')!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    color: sortBy == 'pv.price' &&
-                                            orderBy == 'DESC'
-                                        ? Theme.of(context).colorScheme.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .fontColor),
-                          )),
-                      onTap: () {
-                        sortBy = 'pv.price';
-                        orderBy = 'DESC';
-                        if (mounted) {
-                          setState(() {
-                            _isLoading = true;
-                            total = 0;
-                            offset = 0;
-                            productList.clear();
-                          });
-                        }
-                        getProduct("0");
-                        Navigator.pop(context, 'option 4');
-                      }),
-                ]),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(getTranslated(context, 'F_NEWEST')!,
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                              color: sortBy == 'p.date_added' && orderBy == 'DESC'
+                                  ? Theme.of(context).colorScheme.white
+                                  : Theme.of(context).colorScheme.fontColor))),
+                  onTap: () {
+                    sortBy = 'p.date_added';
+                    orderBy = 'DESC';
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = true;
+                        total = 0;
+                        offset = 0;
+                        productList.clear();
+                      });
+                    }
+                    getProduct("0");
+                    Navigator.pop(context, 'option 1');
+                  }),
+              InkWell(
+                  child: Container(
+                      width: deviceWidth,
+                      color: sortBy == 'p.date_added' && orderBy == 'ASC'
+                          ? colors.primary
+                          : Theme.of(context).colorScheme.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        getTranslated(context, 'F_OLDEST')!,
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: sortBy == 'p.date_added' && orderBy == 'ASC'
+                                ? Theme.of(context).colorScheme.white
+                                : Theme.of(context).colorScheme.fontColor),
+                      )),
+                  onTap: () {
+                    sortBy = 'p.date_added';
+                    orderBy = 'ASC';
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = true;
+                        total = 0;
+                        offset = 0;
+                        productList.clear();
+                      });
+                    }
+                    getProduct("0");
+                    Navigator.pop(context, 'option 2');
+                  }),
+              InkWell(
+                  child: Container(
+                      width: deviceWidth,
+                      color: sortBy == 'pv.price' && orderBy == 'ASC'
+                          ? colors.primary
+                          : Theme.of(context).colorScheme.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        getTranslated(context, 'F_LOW')!,
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: sortBy == 'pv.price' && orderBy == 'ASC'
+                                ? Theme.of(context).colorScheme.white
+                                : Theme.of(context).colorScheme.fontColor),
+                      )),
+                  onTap: () {
+                    sortBy = 'pv.price';
+                    orderBy = 'ASC';
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = true;
+                        total = 0;
+                        offset = 0;
+                        productList.clear();
+                      });
+                    }
+                    getProduct("0");
+                    Navigator.pop(context, 'option 3');
+                  }),
+              InkWell(
+                  child: Container(
+                      width: deviceWidth,
+                      color: sortBy == 'pv.price' && orderBy == 'DESC'
+                          ? colors.primary
+                          : Theme.of(context).colorScheme.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        getTranslated(context, 'F_HIGH')!,
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: sortBy == 'pv.price' && orderBy == 'DESC'
+                                ? Theme.of(context).colorScheme.white
+                                : Theme.of(context).colorScheme.fontColor),
+                      )),
+                  onTap: () {
+                    sortBy = 'pv.price';
+                    orderBy = 'DESC';
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = true;
+                        total = 0;
+                        offset = 0;
+                        productList.clear();
+                      });
+                    }
+                    getProduct("0");
+                    Navigator.pop(context, 'option 4');
+                  }),
+            ]),
           );
         });
       },
@@ -2011,9 +1661,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
         var parameter = {
           USER_ID: CUR_USERID,
-          PRODUCT_VARIENT_ID: productList[index]
-              .prVarientList![productList[index].selVarient!]
-              .id,
+          PRODUCT_VARIENT_ID: productList[index].prVarientList![productList[index].selVarient!].id,
           QTY: qty
         };
 
@@ -2027,14 +1675,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             // CUR_CART_COUNT = data['cart_count'];
 
             context.read<UserProvider>().setCartCount(data['cart_count']);
-            productList[index]
-                .prVarientList![productList[index].selVarient!]
-                .cartCount = qty.toString();
+            productList[index].prVarientList![productList[index].selVarient!].cartCount = qty.toString();
 
             var cart = getdata["cart"];
-            List<SectionModel> cartList = (cart as List)
-                .map((cart) => SectionModel.fromCart(cart))
-                .toList();
+            List<SectionModel> cartList = (cart as List).map((cart) => SectionModel.fromCart(cart)).toList();
             context.read<CartProvider>().setCartlist(cartList);
           } else {
             setSnackbar(msg!, context);
@@ -2057,51 +1701,27 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           _isProgress = true;
         });
 
-
-
         if (from == 1) {
           List<Product>? prList = [];
           prList.add(productList[index]);
           context.read<CartProvider>().addCartItem(SectionModel(
                 qty: qty,
                 productList: prList,
-                varientId: productList[index]
-                    .prVarientList![productList[index].selVarient!]
-                    .id!,
+                varientId: productList[index].prVarientList![productList[index].selVarient!].id!,
                 id: productList[index].id,
               ));
-          db.insertCart(
-              productList[index].id!,
-              productList[index]
-                  .prVarientList![productList[index].selVarient!]
-                  .id!,
-              qty,
-              context);
-
-
+          db.insertCart(productList[index].id!, productList[index].prVarientList![productList[index].selVarient!].id!,
+              qty, context);
         } else {
-          if (int.parse(qty) >
-              int.parse(productList[index].itemsCounter!.last)) {
+          if (int.parse(qty) > int.parse(productList[index].itemsCounter!.last)) {
             // qty = productList[index].minOrderQuntity.toString();
 
-            setSnackbar(
-                "${getTranslated(context, 'MAXQTY')!} ${productList[index].itemsCounter!.last}",
-                context);
+            setSnackbar("${getTranslated(context, 'MAXQTY')!} ${productList[index].itemsCounter!.last}", context);
           } else {
-            context.read<CartProvider>().updateCartItem(
-                productList[index].id!,
-                qty,
-                productList[index].selVarient!,
-                productList[index]
-                    .prVarientList![productList[index].selVarient!]
-                    .id!);
+            context.read<CartProvider>().updateCartItem(productList[index].id!, qty, productList[index].selVarient!,
+                productList[index].prVarientList![productList[index].selVarient!].id!);
             db.updateCart(
-                productList[index].id!,
-                productList[index]
-                    .prVarientList![productList[index].selVarient!]
-                    .id!,
-                qty);
-
+                productList[index].id!, productList[index].prVarientList![productList[index].selVarient!].id!, qty);
           }
         }
         setState(() {
@@ -2131,8 +1751,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(25)),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
                     height: 44,
                     child: TextField(
                       controller: _controller1,
@@ -2142,8 +1761,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.gray),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.gray),
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10.0),
                             ),
@@ -2154,8 +1772,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                               Radius.circular(10.0),
                             ),
                           ),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(15.0, 5.0, 0, 5.0),
+                          contentPadding: const EdgeInsets.fromLTRB(15.0, 5.0, 0, 5.0),
                           border: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.all(
@@ -2166,18 +1783,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           filled: true,
                           isDense: true,
                           hintText: getTranslated(context, 'searchHint'),
-                          hintStyle: Theme.of(context)
-                              .textTheme
-                              .bodyText2!
-                              .copyWith(
+                          hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
                                 color: Theme.of(context).colorScheme.fontColor,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.normal,
                               ),
-                          prefixIcon: const Padding(
-                              padding: EdgeInsets.all(15.0),
-                              child: Icon(Icons.search)),
+                          prefixIcon: const Padding(padding: EdgeInsets.all(15.0), child: Icon(Icons.search)),
                           suffixIcon: _controller1.text != ''
                               ? IconButton(
                                   onPressed: () {
@@ -2223,13 +1835,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                       ? ListView.builder(
                           controller: controller,
                           shrinkWrap: true,
-                          itemCount: (offset < total)
-                              ? productList.length + 1
-                              : productList.length,
+                          itemCount: (offset < total) ? productList.length + 1 : productList.length,
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return (index == productList.length &&
-                                    isLoadingmore)
+                            return (index == productList.length && isLoadingmore)
                                 ? singleItemSimmer(context)
                                 : listItem(index);
                           },
@@ -2241,15 +1850,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           childAspectRatio: 0.6,
                           physics: const AlwaysScrollableScrollPhysics(),
                           children: List.generate(
-                            (offset < total)
-                                ? productList.length + 1
-                                : productList.length,
+                            (offset < total) ? productList.length + 1 : productList.length,
                             (index) {
-                              return (index == productList.length &&
-                                      isLoadingmore)
+                              return (index == productList.length && isLoadingmore)
                                   ? simmerSingleProduct(context)
-                                  : productItem(
-                                      index, index % 2 == 0 ? true : false);
+                                  : productItem(index, index % 2 == 0 ? true : false);
                             },
                           )),
         ),
@@ -2311,7 +1916,6 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
     setStater(() {
       lastWords = result.recognizedWords;
       query = lastWords.replaceAll(' ', '');
-
     });
 
     if (result.finalResult) {
@@ -2319,8 +1923,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         clearAll();
 
         _controller1.text = lastWords;
-        _controller1.selection = TextSelection.fromPosition(
-            TextPosition(offset: _controller1.text.length));
+        _controller1.selection = TextSelection.fromPosition(TextPosition(offset: _controller1.text.length));
 
         setState(() {});
         Navigator.of(context).pop();
@@ -2338,17 +1941,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   }
 
   showSpeechDialog() {
-    return dialogAnimate(context, StatefulBuilder(
-        builder: (BuildContext context, StateSetter setStater1) {
+    return dialogAnimate(context, StatefulBuilder(builder: (BuildContext context, StateSetter setStater1) {
       setStater = setStater1;
       return AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.lightWhite,
         title: Text(
           'Search for desired product',
-          style: Theme.of(context)
-              .textTheme
-              .subtitle1!
-              .copyWith(color: Theme.of(context).colorScheme.fontColor),
+          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).colorScheme.fontColor),
           textAlign: TextAlign.center,
         ),
         content: Column(
@@ -2360,8 +1959,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                   BoxShadow(
                       blurRadius: .26,
                       spreadRadius: level * 1.5,
-                      color:
-                          Theme.of(context).colorScheme.black.withOpacity(.05))
+                      color: Theme.of(context).colorScheme.black.withOpacity(.05))
                 ],
                 color: Theme.of(context).colorScheme.white,
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
@@ -2375,9 +1973,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     if (!_hasSpeech) {
                       initSpeechState();
                     } else {
-                      !_hasSpeech || speech.isListening
-                          ? null
-                          : startListening();
+                      !_hasSpeech || speech.isListening ? null : startListening();
                     }
                   }),
             ),
@@ -2392,15 +1988,17 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 child: speech.isListening
                     ? Text(
                         "I'm listening...",
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).colorScheme.fontColor,
-                            fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold),
                       )
                     : Text(
                         'Not listening',
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).colorScheme.fontColor,
-                            fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold),
                       ),
               ),
             ),
@@ -2437,12 +2035,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       for (int i = 0; i < tagList!.length; i++) {
         tagChip = ChoiceChip(
           selected: false,
-          label: Text(tagList![i],
-              style: TextStyle(color: Theme.of(context).colorScheme.white)),
+          label: Text(tagList![i], style: TextStyle(color: Theme.of(context).colorScheme.white)),
           backgroundColor: colors.primary,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25))),
           onSelected: (bool selected) {
             if (mounted) {
               Navigator.push(
@@ -2458,18 +2054,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           },
         );
 
-        chips.add(Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: tagChip));
+        chips.add(Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: tagChip));
       }
 
       return Container(
         height: 50,
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: ListView(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            children: chips),
+        child: ListView(scrollDirection: Axis.horizontal, shrinkWrap: true, children: chips),
       );
     } else {
       return Container();
@@ -2541,10 +2132,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(10.0),
       ),
       builder: (builder) {
-        _currentRangeValues =
-            RangeValues(double.parse(minPrice), double.parse(maxPrice));
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
+        _currentRangeValues = RangeValues(double.parse(minPrice), double.parse(maxPrice));
+        return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
             Padding(
                 padding: const EdgeInsetsDirectional.only(top: 30.0),
@@ -2566,8 +2155,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         onTap: () => Navigator.of(context).pop(),
                         child: const Padding(
                           padding: EdgeInsetsDirectional.only(end: 4.0),
-                          child: Icon(Icons.arrow_back_ios_rounded,
-                              color: colors.primary),
+                          child: Icon(Icons.arrow_back_ios_rounded, color: colors.primary),
                         ),
                       ),
                     );
@@ -2576,8 +2164,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             Expanded(
                 child: Container(
               color: Theme.of(context).colorScheme.lightWhite,
-              padding: const EdgeInsetsDirectional.only(
-                  start: 7.0, end: 7.0, top: 7.0),
+              padding: const EdgeInsetsDirectional.only(start: 7.0, end: 7.0, top: 7.0),
               child: filterList != null
                   ? ListView.builder(
                       shrinkWrap: true,
@@ -2596,15 +2183,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             'Price Range',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1!
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .lightBlack,
-                                                    fontWeight:
-                                                        FontWeight.normal),
+                                            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                                color: Theme.of(context).colorScheme.lightBlack,
+                                                fontWeight: FontWeight.normal),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
                                           )))),
@@ -2627,21 +2208,16 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           );
                         } else {
                           index = index - 1;
-                          attsubList =
-                              filterList[index]['attribute_values'].split(',');
+                          attsubList = filterList[index]['attribute_values'].split(',');
 
-                          attListId = filterList[index]['attribute_values_id']
-                              .split(',');
+                          attListId = filterList[index]['attribute_values_id'].split(',');
 
                           List<Widget?> chips = [];
-                          List<String> att =
-                              filterList[index]['attribute_values']!.split(',');
+                          List<String> att = filterList[index]['attribute_values']!.split(',');
 
-                          List<String> attSType =
-                              filterList[index]['swatche_type'].split(',');
+                          List<String> attSType = filterList[index]['swatche_type'].split(',');
 
-                          List<String> attSValue =
-                              filterList[index]['swatche_value'].split(',');
+                          List<String> attSValue = filterList[index]['swatche_value'].split(',');
 
                           for (int i = 0; i < att.length; i++) {
                             Widget itemLabel;
@@ -2652,9 +2228,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
                               itemLabel = Container(
                                 width: 25,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(int.parse(color))),
+                                decoration: BoxDecoration(shape: BoxShape.circle, color: Color(int.parse(color))),
                               );
                             } else if (attSType[i] == "2") {
                               itemLabel = ClipRRect(
@@ -2662,23 +2236,15 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                   child: Image.network(attSValue[i],
                                       width: 80,
                                       height: 80,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              erroWidget(80)));
+                                      errorBuilder: (context, error, stackTrace) => erroWidget(80)));
                             } else {
                               itemLabel = Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(att[i],
                                     style: TextStyle(
-                                        color:
-                                            selectedId.contains(attListId![i])
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .white
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .fontColor)),
+                                        color: selectedId.contains(attListId![i])
+                                            ? Theme.of(context).colorScheme.white
+                                            : Theme.of(context).colorScheme.fontColor)),
                               );
                             }
 
@@ -2687,21 +2253,15 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                               label: itemLabel,
                               labelPadding: const EdgeInsets.all(0),
                               selectedColor: colors.primary,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.white,
+                              backgroundColor: Theme.of(context).colorScheme.white,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    attSType[i] == "1" ? 100 : 10),
+                                borderRadius: BorderRadius.circular(attSType[i] == "1" ? 100 : 10),
                                 side: BorderSide(
-                                    color: selectedId.contains(attListId![i])
-                                        ? colors.primary
-                                        : colors.black12,
+                                    color: selectedId.contains(attListId![i]) ? colors.primary : colors.black12,
                                     width: 1.5),
                               ),
                               onSelected: (bool selected) {
-                                attListId = filterList[index]
-                                        ['attribute_values_id']
-                                    .split(',');
+                                attListId = filterList[index]['attribute_values_id'].split(',');
 
                                 if (mounted) {
                                   setState(() {
@@ -2729,14 +2289,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       filterList[index]['name'],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .fontColor,
-                                              fontWeight: FontWeight.normal),
+                                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                          color: Theme.of(context).colorScheme.fontColor,
+                                          fontWeight: FontWeight.normal),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                     ),
@@ -2747,8 +2302,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Wrap(
-                                        children:
-                                            chips.map<Widget>((Widget? chip) {
+                                        children: chips.map<Widget>((Widget? chip) {
                                           return Padding(
                                             padding: const EdgeInsets.all(2.0),
                                             child: chip,
