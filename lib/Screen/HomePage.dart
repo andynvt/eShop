@@ -126,6 +126,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
                       _catList(),
                       _slider(),
                       _section(),
+                      const SizedBox(height: 48),
                     ],
                   ),
                 ))
