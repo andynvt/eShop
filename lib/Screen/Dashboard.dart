@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:eshop/Helper/Color.dart';
 import 'package:eshop/Helper/PushNotificationService.dart';
@@ -104,7 +105,10 @@ class _HomePageState extends State<Dashboard> with SingleTickerProviderStateMixi
         bottomNavigationBar: _getBottomBar(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            launchUrlString('https://wa.me/84366988779?text=Hello,');
+            launchUrlString(
+              'https://wa.me/919778215466?text=Hello,',
+              mode: Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault,
+            );
           },
           backgroundColor: const Color(0xff4dc247),
           child: const Icon(
