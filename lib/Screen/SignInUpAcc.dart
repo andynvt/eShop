@@ -32,9 +32,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
       padding: const EdgeInsetsDirectional.only(top: 30.0),
       child: Text(
         getTranslated(context, 'WELCOME_ESHOP')!,
-        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.bold),
+        style: Theme.of(context)
+            .textTheme
+            .subtitle1!
+            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -46,9 +47,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
       ),
       child: Text(
         getTranslated(context, 'ECOMMERCE_APP_FOR_ALL_BUSINESS')!,
-        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.normal),
+        style: Theme.of(context)
+            .textTheme
+            .subtitle2!
+            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.normal),
       ),
     );
   }
@@ -58,9 +60,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
       padding: const EdgeInsetsDirectional.only(top: 80.0, bottom: 40),
       child: Text(
         getTranslated(context, 'SIGNIN_ACC_LBL')!,
-        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.bold),
+        style: Theme.of(context)
+            .textTheme
+            .subtitle1!
+            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -77,11 +80,12 @@ class _SignInUpAccState extends State<SignInUpAcc> {
           ),
           child: Text(getTranslated(context, 'SIGNIN_LBL')!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: colors.whiteTemp, fontWeight: FontWeight.normal))),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: colors.whiteTemp, fontWeight: FontWeight.normal))),
       onPressed: () {
-        Navigator.push(context,
-            CupertinoPageRoute(builder: (BuildContext context) => const Login()));
+        Navigator.push(context, CupertinoPageRoute(builder: (BuildContext context) => const Login()));
       },
     );
   }
@@ -98,8 +102,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
           ),
           child: Text(getTranslated(context, 'CREATE_ACC_LBL')!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: colors.whiteTemp, fontWeight: FontWeight.normal))),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: colors.whiteTemp, fontWeight: FontWeight.normal))),
       onPressed: () {
         Navigator.of(context).push(CupertinoPageRoute(
           builder: (BuildContext context) => SendOtp(
@@ -122,8 +128,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
           ),
           child: Text(getTranslated(context, 'SKIP_SIGNIN_LBL')!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: colors.whiteTemp, fontWeight: FontWeight.normal))),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: colors.whiteTemp, fontWeight: FontWeight.normal))),
       onPressed: () {
         Navigator.pushReplacementNamed(context, "/home");
       },
@@ -161,6 +169,7 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
+
     return Container(
         color: Theme.of(context).colorScheme.lightWhite,
         child: Platform.isIOS
