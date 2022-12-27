@@ -10,7 +10,7 @@ import 'package:eshop/Helper/Session.dart';
 import 'package:eshop/Helper/String.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_safe/open_file_safe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -60,10 +60,8 @@ class _ChatState extends State<Chat> {
     super.dispose();
   }
 
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    final SendPort send =
-        IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
     send.send([id, status, progress]);
   }
 
@@ -93,8 +91,7 @@ class _ChatState extends State<Chat> {
 
   void insertItem(String response) {
     if (chatstreamdata != null) chatstreamdata!.sink.add(response);
-    _scrollController.animateTo(0.0,
-        duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    _scrollController.animateTo(0.0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
   Widget buildListMessage() {
@@ -144,13 +141,10 @@ class _ChatState extends State<Chat> {
   }
 
   Widget MsgContent(int index, Model message) {
-    SettingProvider settingsProvider =
-        Provider.of<SettingProvider>(context, listen: false);
+    SettingProvider settingsProvider = Provider.of<SettingProvider>(context, listen: false);
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: message.uid == settingsProvider.userId
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
+      crossAxisAlignment: message.uid == settingsProvider.userId ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: <Widget>[
         message.uid == settingsProvider.userId
             ? Container()
@@ -161,9 +155,8 @@ class _ChatState extends State<Chat> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 5.0),
-                      child: Text(capitalize(message.name!),
-                          style: const TextStyle(
-                              color: colors.primary, fontSize: 12)),
+                      child:
+                          Text(capitalize(message.name!), style: const TextStyle(color: colors.primary, fontSize: 12)),
                     )
                   ],
                 ),
@@ -182,22 +175,16 @@ class _ChatState extends State<Chat> {
                     ? Theme.of(context).colorScheme.fontColor.withOpacity(0.1)
                     : Theme.of(context).colorScheme.white,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
                   child: Column(
-                    crossAxisAlignment: message.uid == settingsProvider.userId
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        message.uid == settingsProvider.userId ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("${message.msg}",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.black)),
+                      Text("${message.msg}", style: TextStyle(color: Theme.of(context).colorScheme.black)),
                       Padding(
                         padding: const EdgeInsetsDirectional.only(top: 5),
                         child: Text(message.date!,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.lightBlack,
-                                fontSize: 9)),
+                            style: TextStyle(color: Theme.of(context).colorScheme.lightBlack, fontSize: 9)),
                       ),
                     ],
                   ),
@@ -228,8 +215,7 @@ class _ChatState extends State<Chat> {
 
       if (downloadlist.containsKey(mid)) {
         final tasks = await FlutterDownloader.loadTasksWithRawQuery(
-            query:
-                "SELECT status FROM task WHERE task_id=${downloadlist[mid]}");
+            query: "SELECT status FROM task WHERE task_id=${downloadlist[mid]}");
 
         if (tasks == 4 || tasks == 5) downloadlist.remove(mid);
       }
@@ -237,9 +223,9 @@ class _ChatState extends State<Chat> {
       if (hasExisted) {
         final openFile = await OpenFile.open("$_filePath/$fileName");
       } else if (downloadlist.containsKey(mid)) {
-        setSnackbar(getTranslated(context, 'Downloading')!,context);
+        setSnackbar(getTranslated(context, 'Downloading')!, context);
       } else {
-        setSnackbar(getTranslated(context, 'Downloading')!,context);
+        setSnackbar(getTranslated(context, 'Downloading')!, context);
         final taskid = await FlutterDownloader.enqueue(
             url: url,
             savedDir: _filePath,
@@ -287,8 +273,7 @@ class _ChatState extends State<Chat> {
   }
 
   _imgFromGallery() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
       if (mounted) setState(() {});
@@ -298,8 +283,7 @@ class _ChatState extends State<Chat> {
   }
 
   Future<void> sendMessage(String message) async {
-    SettingProvider settingsProvider =
-        Provider.of<SettingProvider>(context, listen: false);
+    SettingProvider settingsProvider = Provider.of<SettingProvider>(context, listen: false);
 
     setState(() {
       msgController.text = "";
@@ -328,7 +312,6 @@ class _ChatState extends State<Chat> {
     var responseString = String.fromCharCodes(responseData);
     var getdata = json.decode(responseString);
 
-
     bool error = getdata["error"];
     String? msg = getdata['message'];
     var data = getdata["data"];
@@ -343,28 +326,24 @@ class _ChatState extends State<Chat> {
         TICKET_ID: widget.id,
       };
 
-
       apiBaseHelper.postAPICall(getMsgApi, data).then((getdata) {
         bool error = getdata["error"];
         String? msg = getdata["message"];
 
         if (!error) {
           var data = getdata["data"];
-          chatList =
-              (data as List).map((data) => Model.fromChat(data)).toList();
+          chatList = (data as List).map((data) => Model.fromChat(data)).toList();
         } else {
-          if (msg != "Ticket Message(s) does not exist") setSnackbar(msg!,context);
+          if (msg != "Ticket Message(s) does not exist") setSnackbar(msg!, context);
         }
         if (mounted) setState(() {});
       }, onError: (error) {
-        setSnackbar(error.toString(),context);
+        setSnackbar(error.toString(), context);
       });
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg')!,context);
+      setSnackbar(getTranslated(context, 'somethingMSg')!, context);
     }
   }
-
-
 
   msgRow() {
     return widget.status != "4"
@@ -400,13 +379,14 @@ class _ChatState extends State<Chat> {
                   Expanded(
                     child: TextField(
                       controller: msgController,
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                          color: Theme.of(context).colorScheme.fontColor),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Theme.of(context).colorScheme.fontColor),
                       maxLines: null,
                       decoration: InputDecoration(
                           hintText: "Write message...",
-                          hintStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.lightBlack),
+                          hintStyle: TextStyle(color: Theme.of(context).colorScheme.lightBlack),
                           border: InputBorder.none),
                     ),
                   ),
@@ -416,8 +396,7 @@ class _ChatState extends State<Chat> {
                   FloatingActionButton(
                     mini: true,
                     onPressed: () {
-                      if (msgController.text.trim().isNotEmpty ||
-                          files.isNotEmpty) {
+                      if (msgController.text.trim().isNotEmpty || files.isNotEmpty) {
                         sendMessage(msgController.text.trim());
                       }
                     },
@@ -449,8 +428,7 @@ class _ChatState extends State<Chat> {
     } else {
       icon = "assets/images/zip.png";
     }
-    SettingProvider settingsProvider =
-        Provider.of<SettingProvider>(context, listen: false);
+    SettingProvider settingsProvider = Provider.of<SettingProvider>(context, listen: false);
     return file == null
         ? Container()
         : Stack(
@@ -464,9 +442,8 @@ class _ChatState extends State<Chat> {
                 child: Padding(
                   padding: const EdgeInsets.all(5),
                   child: Column(
-                    crossAxisAlignment: message.uid == settingsProvider.userId
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        message.uid == settingsProvider.userId ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                     children: <Widget>[
                       InkWell(
                         onTap: () {
@@ -477,8 +454,7 @@ class _ChatState extends State<Chat> {
                                 width: 250,
                                 height: 150,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    erroWidget(150))
+                                errorBuilder: (context, error, stackTrace) => erroWidget(150))
                             : Image.asset(
                                 icon,
                                 width: 100,
@@ -494,9 +470,7 @@ class _ChatState extends State<Chat> {
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: Text(message.date!,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.lightBlack,
-                          fontSize: 9)),
+                      style: TextStyle(color: Theme.of(context).colorScheme.lightBlack, fontSize: 9)),
                 ),
               ),
             ],

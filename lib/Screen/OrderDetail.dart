@@ -16,7 +16,7 @@ import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_review/in_app_review.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_safe/open_file_safe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,8 +43,7 @@ class OrderDetail extends StatefulWidget {
   }
 }
 
-class StateOrder extends State<OrderDetail>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class StateOrder extends State<OrderDetail> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   ScrollController controller = ScrollController();
   Animation? buttonSqueezeanimation;
   AnimationController? buttonController;
@@ -73,8 +72,7 @@ class StateOrder extends State<OrderDetail>
     super.initState();
     files.clear();
     reviewPhotos.clear();
-    buttonController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+    buttonController = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
     buttonSqueezeanimation = Tween(
       begin: deviceWidth! * 0.7,
       end: 50.0,
@@ -124,10 +122,7 @@ class StateOrder extends State<OrderDetail>
             Future.delayed(const Duration(seconds: 2)).then((_) async {
               _isNetworkAvail = await isNetworkAvailable();
               if (_isNetworkAvail) {
-                Navigator.pushReplacement(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (BuildContext context) => super.widget));
+                Navigator.pushReplacement(context, CupertinoPageRoute(builder: (BuildContext context) => super.widget));
               } else {
                 await buttonController!.reverse();
                 if (mounted) setState(() {});
@@ -199,8 +194,7 @@ class StateOrder extends State<OrderDetail>
         return true;
       },
       child: Scaffold(
-        appBar:
-            getSimpleAppBar(getTranslated(context, "ORDER_DETAIL")!, context),
+        appBar: getSimpleAppBar(getTranslated(context, "ORDER_DETAIL")!, context),
         body: _isNetworkAvail
             ? Stack(
                 children: [
@@ -217,29 +211,25 @@ class StateOrder extends State<OrderDetail>
                             getOrderDetails(model),
                             SingleChildScrollView(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: getSingleProduct(model, PROCESSED),
                               ),
                             ),
                             SingleChildScrollView(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: getSingleProduct(model, DELIVERD),
                               ),
                             ),
                             SingleChildScrollView(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: getSingleProduct(model, CANCLED),
                               ),
                             ),
                             SingleChildScrollView(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: getSingleProduct(model, RETURNED),
                               ),
                             ),
@@ -261,103 +251,109 @@ class StateOrder extends State<OrderDetail>
         elevation: 0,
         child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(
-                  padding:
-                      const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                  padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                   child: Text(getTranslated(context, 'PRICE_DETAIL')!,
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                          color: Theme.of(context).colorScheme.fontColor,
-                          fontWeight: FontWeight.bold))),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold))),
               Divider(
                 color: Theme.of(context).colorScheme.lightBlack,
               ),
               Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("${getTranslated(context, 'PRICE_LBL')!} :",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        getPriceFormat(
-                            context, double.parse(widget.model!.subTotal!))!,
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
+                    Text(getPriceFormat(context, double.parse(widget.model!.subTotal!))!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2))
                   ],
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                        "${getTranslated(context, 'TAXPER')!} (${'${widget.model!.taxPer!}%'}) :",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        "+ ${getPriceFormat(context, double.parse(widget.model!.taxAmt!))!}",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
+                    Text("${getTranslated(context, 'TAXPER')!} (${'${widget.model!.taxPer!}%'}) :",
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
+                    Text("+ ${getPriceFormat(context, double.parse(widget.model!.taxAmt!))!}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2))
                   ],
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("${getTranslated(context, 'DELIVERY_CHARGE')!} :",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        '+ ${getPriceFormat(context, double.parse(widget.model!.delCharge!))!}',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
+                    Text('+ ${getPriceFormat(context, double.parse(widget.model!.delCharge!))!}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2))
                   ],
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("${getTranslated(context, 'PROMO_CODE_DIS_LBL')!} :",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        '- ${getPriceFormat(context, double.parse(widget.model!.promoDis!))!}',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
+                    Text('- ${getPriceFormat(context, double.parse(widget.model!.promoDis!))!}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2))
                   ],
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("${getTranslated(context, 'WALLET_BAL')!} :",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        '- ${getPriceFormat(context, double.parse(widget.model!.walBal!))!}',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
+                    Text('- ${getPriceFormat(context, double.parse(widget.model!.walBal!))!}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2))
                   ],
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -365,8 +361,7 @@ class StateOrder extends State<OrderDetail>
                         style: Theme.of(context).textTheme.button!.copyWith(
                               color: Theme.of(context).colorScheme.lightBlack2,
                             )),
-                    Text(
-                        '+ ${getPriceFormat(context, double.parse(widget.model!.payable!))!}',
+                    Text('+ ${getPriceFormat(context, double.parse(widget.model!.payable!))!}',
                         style: Theme.of(context).textTheme.button!.copyWith(
                               color: Theme.of(context).colorScheme.lightBlack2,
                             ))
@@ -374,21 +369,20 @@ class StateOrder extends State<OrderDetail>
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.only(
-                    start: 15.0, end: 15.0, top: 5.0),
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0, top: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("${getTranslated(context, 'FINAL_TOTAL_LBL')!} :",
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack,
-                            fontWeight: FontWeight.bold)),
-                    Text(
-                        getPriceFormat(
-                            context, double.parse(widget.model!.total!))!,
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack,
-                            fontWeight: FontWeight.bold))
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack, fontWeight: FontWeight.bold)),
+                    Text(getPriceFormat(context, double.parse(widget.model!.total!))!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack, fontWeight: FontWeight.bold))
                   ],
                 ),
               ),
@@ -399,14 +393,12 @@ class StateOrder extends State<OrderDetail>
     return widget.model!.pickTime != ""
         ? Card(
             elevation: 0,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(getTranslated(context, 'ESTIMATE_TIME_LBL')!,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).colorScheme.fontColor)),
-                  Text(widget.model!.pickTime!)
-                ]),
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Text(getTranslated(context, 'ESTIMATE_TIME_LBL')!,
+                  style:
+                      Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).colorScheme.fontColor)),
+              Text(widget.model!.pickTime!)
+            ]),
           )
         : const SizedBox();
   }
@@ -415,14 +407,12 @@ class StateOrder extends State<OrderDetail>
     return widget.model!.sellerNotes != ""
         ? Card(
             elevation: 0,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(getTranslated(context, 'SELLER_NOTES_LBL')!,
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                          color: Theme.of(context).colorScheme.fontColor)),
-                  Text(widget.model!.sellerNotes!)
-                ]),
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Text(getTranslated(context, 'SELLER_NOTES_LBL')!,
+                  style:
+                      Theme.of(context).textTheme.subtitle2!.copyWith(color: Theme.of(context).colorScheme.fontColor)),
+              Text(widget.model!.sellerNotes!)
+            ]),
           )
         : const SizedBox();
   }
@@ -433,139 +423,102 @@ class StateOrder extends State<OrderDetail>
           elevation: 0,
           child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 15.0, end: 15.0),
-                        child: Text(getTranslated(context, 'SHIPPING_DETAIL')!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.fontColor,
-                                    fontWeight: FontWeight.bold))),
-                    Divider(
-                      color: Theme.of(context).colorScheme.lightBlack,
-                    ),
-                    Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 15.0, end: 15.0),
-                        child: Text(
-                          "${widget.model!.recname!},",
-                        )),
-                    Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 15.0, end: 15.0),
-                        child: Text(widget.model!.address!,
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .lightBlack2))),
-                    Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 15.0, end: 15.0),
-                        child: Text(widget.model!.recContact!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.lightBlack2,
-                            ))),
-                  ])));
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                    child: Text(getTranslated(context, 'SHIPPING_DETAIL')!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold))),
+                Divider(
+                  color: Theme.of(context).colorScheme.lightBlack,
+                ),
+                Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                    child: Text(
+                      "${widget.model!.recname!},",
+                    )),
+                Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                    child: Text(widget.model!.address!,
+                        style: TextStyle(color: Theme.of(context).colorScheme.lightBlack2))),
+                Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                    child: Text(widget.model!.recContact!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.lightBlack2,
+                        ))),
+              ])));
     } else {
       return Card(
           elevation: 0,
           child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 15.0, end: 15.0),
-                        child: Text(
-                            getTranslated(context, 'SELLER_DETAILS_LBL')!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.fontColor,
-                                    fontWeight: FontWeight.bold))),
-                    Divider(
-                      color: Theme.of(context).colorScheme.lightBlack,
-                    ),
-                    ADMIN_ADDRESS != ""
-                        ? Padding(
-                            padding: const EdgeInsetsDirectional.only(
-                                start: 15.0, end: 15.0),
-                            child: Text(ADMIN_ADDRESS,
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .lightBlack2)))
-                        : SizedBox(),
-                    Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 15.0, end: 15.0, top: 15),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: CupertinoButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      _launchMap(ADMIN_LAT, ADMIN_LONG);
-                                    },
-                                    child: Container(
-                                        height: 40,
-                                        alignment: FractionalOffset.center,
-                                        decoration: const BoxDecoration(
-                                          color: colors.primary,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                        ),
-                                        child: Text(
-                                            getTranslated(
-                                                context, 'GET_SHOP_DIRE_LBL')!,
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .copyWith(
-                                                    color: colors.whiteTemp,
-                                                    fontWeight:
-                                                        FontWeight.normal))))),
-                            SizedBox(
-                              width: 25,
-                            ),
-                            Expanded(
-                                child: CupertinoButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      _launchCaller(ADMIN_MOB);
-                                    },
-                                    child: Container(
-                                        height: 40,
-                                        alignment: FractionalOffset.center,
-                                        decoration: const BoxDecoration(
-                                          color: colors.primary,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                        ),
-                                        child: Text(
-                                            getTranslated(
-                                                context, 'CALL_TO_SELLER_LBL')!,
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .copyWith(
-                                                    color: colors.whiteTemp,
-                                                    fontWeight:
-                                                        FontWeight.normal))))),
-                          ],
-                        )),
-                  ])));
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                    child: Text(getTranslated(context, 'SELLER_DETAILS_LBL')!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.fontColor, fontWeight: FontWeight.bold))),
+                Divider(
+                  color: Theme.of(context).colorScheme.lightBlack,
+                ),
+                ADMIN_ADDRESS != ""
+                    ? Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                        child: Text(ADMIN_ADDRESS, style: TextStyle(color: Theme.of(context).colorScheme.lightBlack2)))
+                    : SizedBox(),
+                Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0, top: 15),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  _launchMap(ADMIN_LAT, ADMIN_LONG);
+                                },
+                                child: Container(
+                                    height: 40,
+                                    alignment: FractionalOffset.center,
+                                    decoration: const BoxDecoration(
+                                      color: colors.primary,
+                                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    child: Text(getTranslated(context, 'GET_SHOP_DIRE_LBL')!,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(color: colors.whiteTemp, fontWeight: FontWeight.normal))))),
+                        SizedBox(
+                          width: 25,
+                        ),
+                        Expanded(
+                            child: CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  _launchCaller(ADMIN_MOB);
+                                },
+                                child: Container(
+                                    height: 40,
+                                    alignment: FractionalOffset.center,
+                                    decoration: const BoxDecoration(
+                                      color: colors.primary,
+                                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    child: Text(getTranslated(context, 'CALL_TO_SELLER_LBL')!,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(color: colors.whiteTemp, fontWeight: FontWeight.normal))))),
+                      ],
+                    )),
+              ])));
     }
   }
 
@@ -582,11 +535,9 @@ class StateOrder extends State<OrderDetail>
     var url = '';
 
     if (Platform.isAndroid) {
-      url =
-          "https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving&dir_action=navigate";
+      url = "https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving&dir_action=navigate";
     } else {
-      url =
-          "http://maps.apple.com/?saddr=&daddr=$lat,$lng&directionsmode=driving&dir_action=navigate";
+      url = "http://maps.apple.com/?saddr=&daddr=$lat,$lng&directionsmode=driving&dir_action=navigate";
     }
     await launchUrlString(url, mode: LaunchMode.externalApplication);
   }
@@ -609,8 +560,7 @@ class StateOrder extends State<OrderDetail>
       }
     } else {
       if (orderItem.listStatus!.contains(READY_TO_PICKUP)) {
-        sDate =
-            orderItem.listDate![orderItem.listStatus!.indexOf(READY_TO_PICKUP)];
+        sDate = orderItem.listDate![orderItem.listStatus!.indexOf(READY_TO_PICKUP)];
       }
     }
     if (orderItem.listStatus!.contains(DELIVERD)) {
@@ -644,8 +594,7 @@ class StateOrder extends State<OrderDetail>
                           height: 90.0,
                           width: 90.0,
                           fit: BoxFit.cover,
-                          imageErrorBuilder: (context, error, stackTrace) =>
-                              erroWidget(90),
+                          imageErrorBuilder: (context, error, stackTrace) => erroWidget(90),
                           placeholder: placeHolder(90),
                         )),
                     Expanded(
@@ -656,21 +605,14 @@ class StateOrder extends State<OrderDetail>
                           children: [
                             Text(
                               orderItem.name!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .lightBlack,
-                                      fontWeight: FontWeight.normal),
+                              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  color: Theme.of(context).colorScheme.lightBlack, fontWeight: FontWeight.normal),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             orderItem.attr_name!.isNotEmpty
                                 ? ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: att.length,
                                     itemBuilder: (context, index) {
@@ -682,25 +624,17 @@ class StateOrder extends State<OrderDetail>
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle2!
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .lightBlack2),
+                                                .copyWith(color: Theme.of(context).colorScheme.lightBlack2),
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.only(
-                                                  start: 5.0),
+                                          padding: const EdgeInsetsDirectional.only(start: 5.0),
                                           child: Text(
                                             val[index],
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle2!
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .lightBlack),
+                                                .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                                           ),
                                         )
                                       ]);
@@ -712,36 +646,25 @@ class StateOrder extends State<OrderDetail>
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .lightBlack2),
+                                    .copyWith(color: Theme.of(context).colorScheme.lightBlack2),
                               ),
                               Padding(
-                                padding: const EdgeInsetsDirectional.only(
-                                    start: 5.0),
+                                padding: const EdgeInsetsDirectional.only(start: 5.0),
                                 child: Text(
                                   orderItem.qty!,
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle2!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .lightBlack),
+                                      .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                                 ),
                               )
                             ]),
                             Text(
-                              getPriceFormat(
-                                  context, double.parse(orderItem.price!))!,
+                              getPriceFormat(context, double.parse(orderItem.price!))!,
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .fontColor),
+                                  .copyWith(color: Theme.of(context).colorScheme.fontColor),
                             ),
                           ],
                         ),
@@ -783,8 +706,7 @@ class StateOrder extends State<OrderDetail>
                                 : getTranslated(context, "WRITE_REVIEW_LBL")!,
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                                color: Theme.of(context).colorScheme.btnColor),
+                            side: BorderSide(color: Theme.of(context).colorScheme.btnColor),
                           ),
                         ),
                       ),
@@ -804,27 +726,18 @@ class StateOrder extends State<OrderDetail>
                                         builder: (BuildContext context) {
                                           return AlertDialog(
                                             title: Text(
-                                              getTranslated(
-                                                  context, 'ARE_YOU_SURE?')!,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .fontColor),
+                                              getTranslated(context, 'ARE_YOU_SURE?')!,
+                                              style: TextStyle(color: Theme.of(context).colorScheme.fontColor),
                                             ),
                                             content: Text(
                                               "Would you like to cancel this product?",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .fontColor),
+                                              style: TextStyle(color: Theme.of(context).colorScheme.fontColor),
                                             ),
                                             actions: [
                                               TextButton(
                                                 child: Text(
-                                                  getTranslated(
-                                                      context, 'YES')!,
-                                                  style: const TextStyle(
-                                                      color: colors.primary),
+                                                  getTranslated(context, 'YES')!,
+                                                  style: const TextStyle(color: colors.primary),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.pop(context);
@@ -832,17 +745,13 @@ class StateOrder extends State<OrderDetail>
                                                     _isReturnClick = false;
                                                     _isProgress = true;
                                                   });
-                                                  cancelOrder(
-                                                      CANCLED,
-                                                      updateOrderItemApi,
-                                                      orderItem.id);
+                                                  cancelOrder(CANCLED, updateOrderItemApi, orderItem.id);
                                                 },
                                               ),
                                               TextButton(
                                                 child: Text(
                                                   getTranslated(context, 'NO')!,
-                                                  style: const TextStyle(
-                                                      color: colors.primary),
+                                                  style: const TextStyle(color: colors.primary),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.pop(context);
@@ -854,8 +763,7 @@ class StateOrder extends State<OrderDetail>
                                       );
                                     }
                                   : null,
-                              child:
-                                  Text(getTranslated(context, 'ITEM_CANCEL')!),
+                              child: Text(getTranslated(context, 'ITEM_CANCEL')!),
                             )),
                       )
                     else
@@ -872,27 +780,18 @@ class StateOrder extends State<OrderDetail>
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               title: Text(
-                                                getTranslated(
-                                                    context, 'ARE_YOU_SURE?')!,
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .fontColor),
+                                                getTranslated(context, 'ARE_YOU_SURE?')!,
+                                                style: TextStyle(color: Theme.of(context).colorScheme.fontColor),
                                               ),
                                               content: Text(
                                                 "Would you like to return this product?",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .fontColor),
+                                                style: TextStyle(color: Theme.of(context).colorScheme.fontColor),
                                               ),
                                               actions: [
                                                 TextButton(
                                                   child: Text(
-                                                    getTranslated(
-                                                        context, 'YES')!,
-                                                    style: const TextStyle(
-                                                        color: colors.primary),
+                                                    getTranslated(context, 'YES')!,
+                                                    style: const TextStyle(color: colors.primary),
                                                   ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
@@ -900,18 +799,13 @@ class StateOrder extends State<OrderDetail>
                                                       _isReturnClick = false;
                                                       _isProgress = true;
                                                     });
-                                                    cancelOrder(
-                                                        RETURNED,
-                                                        updateOrderItemApi,
-                                                        orderItem.id);
+                                                    cancelOrder(RETURNED, updateOrderItemApi, orderItem.id);
                                                   },
                                                 ),
                                                 TextButton(
                                                   child: Text(
-                                                    getTranslated(
-                                                        context, 'NO')!,
-                                                    style: const TextStyle(
-                                                        color: colors.primary),
+                                                    getTranslated(context, 'NO')!,
+                                                    style: const TextStyle(color: colors.primary),
                                                   ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
@@ -923,8 +817,7 @@ class StateOrder extends State<OrderDetail>
                                         );
                                       }
                                     : null,
-                                child: Text(
-                                    getTranslated(context, 'ITEM_RETURN')!),
+                                child: Text(getTranslated(context, 'ITEM_RETURN')!),
                               ),
                             )
                           : Container(),
@@ -958,14 +851,12 @@ class StateOrder extends State<OrderDetail>
               itemCount: model.attachList!.length,
               itemBuilder: (context, i) {
                 return Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                      top: 8.0, bottom: 8, end: 8),
+                  padding: const EdgeInsetsDirectional.only(top: 8.0, bottom: 8, end: 8),
                   child: InkWell(
                     child: Text(
                       "Attachment ${i + 1}",
                       style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Theme.of(context).colorScheme.fontColor),
+                          decoration: TextDecoration.underline, color: Theme.of(context).colorScheme.fontColor),
                     ),
                     onTap: () {
                       _launchURL(model.attachList![i].attachment!);
@@ -977,8 +868,7 @@ class StateOrder extends State<OrderDetail>
           ),
         ),
         Container(
-            decoration: BoxDecoration(
-                color: clr, borderRadius: BorderRadius.circular(5)),
+            decoration: BoxDecoration(color: clr, borderRadius: BorderRadius.circular(5)),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
               child: Text(status),
@@ -997,13 +887,11 @@ class StateOrder extends State<OrderDetail>
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: model.orderPrescriptionAttachments!.length > 5
-                  ? 5
-                  : model.orderPrescriptionAttachments!.length,
+              itemCount:
+                  model.orderPrescriptionAttachments!.length > 5 ? 5 : model.orderPrescriptionAttachments!.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                      top: 8.0, bottom: 8, end: 8),
+                  padding: const EdgeInsetsDirectional.only(top: 8.0, bottom: 8, end: 8),
                   child: InkWell(
                     onTap: () async {
                       if (index == 4) {
@@ -1012,8 +900,7 @@ class StateOrder extends State<OrderDetail>
                             CupertinoPageRoute(
                                 builder: (context) => ReviewGallary(
                                       orderModel: model,
-                                      imageList:
-                                          model.orderPrescriptionAttachments,
+                                      imageList: model.orderPrescriptionAttachments,
                                     )));
                       } else {
                         Navigator.push(
@@ -1021,8 +908,7 @@ class StateOrder extends State<OrderDetail>
                             PageRouteBuilder(
                                 pageBuilder: (_, __, ___) => ReviewPreview(
                                       index: index,
-                                      imageList:
-                                          model.orderPrescriptionAttachments,
+                                      imageList: model.orderPrescriptionAttachments,
                                     )));
                       }
                     },
@@ -1030,14 +916,12 @@ class StateOrder extends State<OrderDetail>
                       children: [
                         FadeInImage(
                           fadeInDuration: const Duration(milliseconds: 150),
-                          image: NetworkImage(
-                              model.orderPrescriptionAttachments![index]),
+                          image: NetworkImage(model.orderPrescriptionAttachments![index]),
                           height: 100.0,
                           width: 80.0,
                           fit: BoxFit.cover,
                           placeholder: placeHolder(80),
-                          imageErrorBuilder: (context, error, stackTrace) =>
-                              erroWidget(80),
+                          imageErrorBuilder: (context, error, stackTrace) => erroWidget(80),
                         ),
                         index == 4
                             ? Container(
@@ -1048,9 +932,7 @@ class StateOrder extends State<OrderDetail>
                                     child: Text(
                                   "+${model.orderPrescriptionAttachments!.length - 5}",
                                   style: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.white,
-                                      fontWeight: FontWeight.bold),
+                                      color: Theme.of(context).colorScheme.white, fontWeight: FontWeight.bold),
                                 )),
                               )
                             : Container()
@@ -1066,13 +948,11 @@ class StateOrder extends State<OrderDetail>
     );
   }
 
-  void _launchURL(String url) async => await canLaunchUrlString(url)
-      ? await launchUrlString(url)
-      : throw 'Could not launch $url';
+  void _launchURL(String url) async =>
+      await canLaunchUrlString(url) ? await launchUrlString(url) : throw 'Could not launch $url';
 
   _imgFromGallery() async {
-    var result = await FilePicker.platform
-        .pickFiles(allowMultiple: true, type: FileType.image);
+    var result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.image);
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
       if (mounted) setState(() {});
@@ -1463,8 +1343,10 @@ class StateOrder extends State<OrderDetail>
                   ),
                   title: Text(
                     getTranslated(context, 'DWNLD_INVOICE')!,
-                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        color: Theme.of(context).colorScheme.lightBlack),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                   ),
                 ),
                 onTap: () async {
@@ -1491,11 +1373,8 @@ class StateOrder extends State<OrderDetail>
                     var targetFileName = 'Invoice_${widget.model!.id}';
                     var generatedPdfFile, filePath;
                     try {
-                      generatedPdfFile =
-                          await FlutterHtmlToPdf.convertFromHtmlContent(
-                              widget.model!.invoice!,
-                              targetPath.toString(),
-                              targetFileName);
+                      generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
+                          widget.model!.invoice!, targetPath.toString(), targetFileName);
                       filePath = generatedPdfFile.path;
 
                       File fileDef = File(filePath);
@@ -1507,8 +1386,7 @@ class StateOrder extends State<OrderDetail>
                         setState(() {
                           _isProgress = false;
                         });
-                        setSnackbar(
-                            getTranslated(context, 'somethingMSg')!, context);
+                        setSnackbar(getTranslated(context, 'somethingMSg')!, context);
                       }
                       return;
                     }
@@ -1522,8 +1400,7 @@ class StateOrder extends State<OrderDetail>
                       content: Text(
                         "${getTranslated(context, 'INVOICE_PATH')} $targetFileName",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.black),
+                        style: TextStyle(color: Theme.of(context).colorScheme.black),
                       ),
                       action: SnackBarAction(
                           label: getTranslated(context, 'VIEW')!,
@@ -1637,8 +1514,10 @@ class StateOrder extends State<OrderDetail>
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
                         "${getTranslated(context, 'PREFER_DATE_TIME')!}: ${model.delDate!} - ${model.delTime!}",
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2),
                       ),
                     ),
                   )
@@ -1672,9 +1551,7 @@ class StateOrder extends State<OrderDetail>
           if (orderItem.status == activeStatus) {
             return productItem(orderItem, model);
           }
-          if ((orderItem.status == SHIPED ||
-                  orderItem.status == PLACED ||
-                  orderItem.status == READY_TO_PICKUP) &&
+          if ((orderItem.status == SHIPED || orderItem.status == PLACED || orderItem.status == READY_TO_PICKUP) &&
               activeStatus == PROCESSED) {
             return productItem(orderItem, model);
           }
@@ -1699,17 +1576,14 @@ class StateOrder extends State<OrderDetail>
   void openBottomSheet(BuildContext context, OrderItem orderItem) {
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40.0),
-                topRight: Radius.circular(40.0))),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0), topRight: Radius.circular(40.0))),
         isScrollControlled: true,
         context: context,
         builder: (context) {
           return Wrap(
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -1732,9 +1606,8 @@ class StateOrder extends State<OrderDetail>
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Theme.of(context).colorScheme.lightBlack),
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.circular(20.0), color: Theme.of(context).colorScheme.lightBlack),
         height: 5,
         width: MediaQuery.of(context).size.width * 0.3,
       ),
@@ -1791,36 +1664,30 @@ class StateOrder extends State<OrderDetail>
           keyboardType: TextInputType.multiline,
           maxLines: 5,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.lightBlack,
-                    width: 1.0)),
+            border:
+                OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.lightBlack, width: 1.0)),
             hintText: getTranslated(context, 'REVIEW_HINT_LBL'),
-            hintStyle: Theme.of(context).textTheme.subtitle2!.copyWith(
-                color:
-                    Theme.of(context).colorScheme.lightBlack2.withOpacity(0.7)),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).colorScheme.lightBlack2.withOpacity(0.7)),
           ),
         ));
   }
 
   Widget getImageField() {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setModalState) {
+    return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
       return Container(
-        padding:
-            const EdgeInsetsDirectional.only(start: 20.0, end: 20.0, top: 5),
+        padding: const EdgeInsetsDirectional.only(start: 20.0, end: 20.0, top: 5),
         height: 100,
         child: Row(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
               child: Column(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                        color: colors.primary,
-                        borderRadius: BorderRadius.circular(50.0)),
+                    decoration: BoxDecoration(color: colors.primary, borderRadius: BorderRadius.circular(50.0)),
                     child: IconButton(
                         icon: Icon(
                           Icons.camera_alt,
@@ -1833,9 +1700,7 @@ class StateOrder extends State<OrderDetail>
                   ),
                   Text(
                     getTranslated(context, 'ADD_YOUR_PHOTOS')!,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.lightBlack,
-                        fontSize: 11),
+                    style: TextStyle(color: Theme.of(context).colorScheme.lightBlack, fontSize: 11),
                   )
                 ],
               ),
@@ -1898,20 +1763,15 @@ class StateOrder extends State<OrderDetail>
       children: [
         Expanded(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
             child: MaterialButton(
               height: 45.0,
               textColor: Theme.of(context).colorScheme.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               onPressed: () {
-                if (curRating != 0 ||
-                    commentTextController.text != '' ||
-                    (reviewPhotos.isNotEmpty)) {
+                if (curRating != 0 || commentTextController.text != '' || (reviewPhotos.isNotEmpty)) {
                   Navigator.pop(context);
-                  setRating(curRating, commentTextController.text, reviewPhotos,
-                      orderItem.productId);
+                  setRating(curRating, commentTextController.text, reviewPhotos, orderItem.productId);
                 } else {
                   Navigator.pop(context);
                   setSnackbar(getTranslated(context, 'REVIEW_W')!, context);
@@ -1935,14 +1795,14 @@ class StateOrder extends State<OrderDetail>
   ) {
     return Text(
       getTranslated(context, title)!,
-      style: Theme.of(context).textTheme.headline6!.copyWith(
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).colorScheme.fontColor),
+      style: Theme.of(context)
+          .textTheme
+          .headline6!
+          .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.fontColor),
     );
   }
 
-  Future<void> setRating(
-      double rating, String comment, List<File> files, var productID) async {
+  Future<void> setRating(double rating, String comment, List<File> files, var productID) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       try {
@@ -2007,21 +1867,18 @@ class StateOrder extends State<OrderDetail>
               children: [
                 Text(
                   "${getTranslated(context, "ORDER_ID_LBL")!} - ${model.id}",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.lightBlack2),
+                  style: TextStyle(color: Theme.of(context).colorScheme.lightBlack2),
                 ),
                 Text(
                   "${model.dateTime}",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.lightBlack2),
+                  style: TextStyle(color: Theme.of(context).colorScheme.lightBlack2),
                 )
               ],
             ),
             model.otp != null && model.otp!.isNotEmpty && model.otp != "0"
                 ? Text(
                     "${getTranslated(context, "OTP")!} - ${model.otp}",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.lightBlack2),
+                    style: TextStyle(color: Theme.of(context).colorScheme.lightBlack2),
                   )
                 : Container(),
           ],
@@ -2056,8 +1913,7 @@ class StateOrder extends State<OrderDetail>
                             ? Text(
                                 "${getTranslated(context, 'COURIER_AGENCY')!}: ",
                                 style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.lightBlack2,
+                                  color: Theme.of(context).colorScheme.lightBlack2,
                                 ),
                               )
                             : Container(),
@@ -2065,8 +1921,7 @@ class StateOrder extends State<OrderDetail>
                             ? Text(
                                 "${getTranslated(context, 'TRACKING_ID')!}: ",
                                 style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.lightBlack2,
+                                  color: Theme.of(context).colorScheme.lightBlack2,
                                 ),
                               )
                             : Container(),
@@ -2081,8 +1936,7 @@ class StateOrder extends State<OrderDetail>
                             ? Text(
                                 model.courier_agency!,
                                 style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.lightBlack2,
+                                  color: Theme.of(context).colorScheme.lightBlack2,
                                 ),
                               )
                             : Container(),
@@ -2092,16 +1946,11 @@ class StateOrder extends State<OrderDetail>
                                 TextSpan(
                                   text: "",
                                   style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .lightBlack,
-                                      fontWeight: FontWeight.bold),
+                                      color: Theme.of(context).colorScheme.lightBlack, fontWeight: FontWeight.bold),
                                 ),
                                 TextSpan(
                                     text: model.courier_agency!,
-                                    style: const TextStyle(
-                                        color: colors.primary,
-                                        decoration: TextDecoration.underline),
+                                    style: const TextStyle(color: colors.primary, decoration: TextDecoration.underline),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () async {
                                         var url = "${model.tracking_url}";
@@ -2109,10 +1958,7 @@ class StateOrder extends State<OrderDetail>
                                         if (await canLaunchUrlString(url)) {
                                           await launchUrlString(url);
                                         } else {
-                                          setSnackbar(
-                                              getTranslated(
-                                                  context, 'URL_ERROR')!,
-                                              context);
+                                          setSnackbar(getTranslated(context, 'URL_ERROR')!, context);
                                         }
                                       })
                               ]))
@@ -2141,8 +1987,10 @@ class StateOrder extends State<OrderDetail>
                     children: [
                       Text(
                         getTranslated(context, 'BANKRECEIPT')!,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                       ),
                       SizedBox(
                         height: 30,
@@ -2160,8 +2008,7 @@ class StateOrder extends State<OrderDetail>
                   ),
                   model.attachList!.isNotEmpty ? bankProof(model) : Container(),
                   Container(
-                    padding: const EdgeInsetsDirectional.only(
-                        start: 20.0, end: 20.0, top: 5),
+                    padding: const EdgeInsetsDirectional.only(start: 20.0, end: 20.0, top: 5),
                     height: files.isNotEmpty ? 180 : 0,
                     child: Row(
                       children: [
@@ -2181,8 +2028,7 @@ class StateOrder extends State<OrderDetail>
                                     height: 180,
                                   ),
                                   Container(
-                                      color:
-                                          Theme.of(context).colorScheme.black26,
+                                      color: Theme.of(context).colorScheme.black26,
                                       child: const Icon(
                                         Icons.clear,
                                         size: 15,
@@ -2201,17 +2047,13 @@ class StateOrder extends State<OrderDetail>
                         )),
                         InkWell(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                             decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.lightWhite,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(4.0))),
+                                borderRadius: const BorderRadius.all(Radius.circular(4.0))),
                             child: Text(
                               getTranslated(context, 'SUBMIT_LBL')!,
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor),
+                              style: TextStyle(color: Theme.of(context).colorScheme.fontColor),
                             ),
                           ),
                           onTap: () {
@@ -2240,12 +2082,12 @@ class StateOrder extends State<OrderDetail>
                 children: [
                   Text(
                     getTranslated(context, 'PRESCRIPTION_ATTACHMENTS')!,
-                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        color: Theme.of(context).colorScheme.lightBlack),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(color: Theme.of(context).colorScheme.lightBlack),
                   ),
-                  model.orderPrescriptionAttachments!.isNotEmpty
-                      ? prescriptionAttachments(model)
-                      : Container(),
+                  model.orderPrescriptionAttachments!.isNotEmpty ? prescriptionAttachments(model) : Container(),
                 ],
               ),
             ),
@@ -2266,11 +2108,15 @@ class StateOrder extends State<OrderDetail>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("${getTranslated(context, 'NOTE')}:",
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
                     Text(model.note!,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).colorScheme.lightBlack2)),
                   ],
                 ),
               ),

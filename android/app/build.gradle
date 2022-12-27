@@ -93,5 +93,5 @@ dependencies {
     implementation 'androidx.browser:browser:1.4.0'
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
-    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0'
+    // implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0'
 }
