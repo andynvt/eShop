@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "419104732904-46foroq6h02qcd9v782c94ui3d4794kd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vouxoriginals.user",
+            "certificate_hash": "2eaa942198de1e161903ef5f5aff05a7e0e3342b"
+          }
+        },
+        {
+          "client_id": "419104732904-531gmhc2ijkkdelmutfjah93bbdncete.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vouxoriginals.user",
+            "certificate_hash": "264af93a0b3044eae7bdd9135275938e8ae94087"
+          }
+        },
+        {
+          "client_id": "419104732904-i2rn3dd2k7hrkm5mvtri9j6jk3trld5n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vouxoriginals.user",
+            "certificate_hash": "3f4de9d9e7065abfe88a6f5d87568e4e119633d4"
+          }
+        },
+        {
           "client_id": "419104732904-klfh6c7hm87dm6m73phuqf25fbj3mqsm.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +53,13 @@
             {
               "client_id": "419104732904-klfh6c7hm87dm6m73phuqf25fbj3mqsm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "419104732904-9snqts36brarvbk4d3qaqnbhurocf5gv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vouxoriginals.user"
+              }
             }
           ]
         }
